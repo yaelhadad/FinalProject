@@ -16,8 +16,7 @@ def update_workers(all_workers,worker,task):
         if task.id in pos_worker.optional_tasks:
             pos_worker.optional_tasks.remove(task.id)
 
-found = False
-worker_yael = Worker("Yael Hadad", ['ATEGen', 'SVFSTIL', 'STILEDITOR','WAVER', 'GENERAL'],['C2'], 60, 14, 0, [],'12345',
+worker_yael = Worker("Yael Hadad", ['ATEGen', 'SVFSTIL', 'STILEDITOR','WAVER', 'GENERAL'],['C2'], 50, 14, 0, [],'12345',
                      ['A1','A2','A3','B1','B2','B3','C1'],['A2','A3','C1'],0,0,0,0,)
 worker_elad = Worker("Elad Motzny", ['CONVMGR', 'ATEGEN', 'STILEDITOR', 'VCDSTIL'],['A2','A3','C1'], 50, 8, 0,[], '12344',
                     ['A1','B1','B2','B3','C2'],['C2'],0,0,0,0)
@@ -27,7 +26,7 @@ task2 = Task('A2','GENERAL','BLA BLA', 6, None, 'A', 'New',2,2,'current')
 task3 = Task('A3','GENERAL','BLA BLA', 2, None, 'A', 'New',3,3,'current')
 task4 = Task('B1','ATEGen','BLA BLA', 6, None, 'B', 'New',4,1,'current')
 task5 = Task('B2','STILEDITOR','BLA BLA', 6, None, 'B', 'New',5,2,'current')
-task6 = Task('B3','GENERAL','BLA BLA', 2, None, 'B', 'New',6,3,'current')
+task6 = Task('B3','ATEGen','BLA BLA', 2, None, 'B', 'New',6,3,'current')
 task7 = Task('C1','WAVER','BLA BLA', 6, None, 'C', 'New',7,1,'current')
 task8 = Task('C2','VCDSTIL','BLA BLA', 2, None, 'B', 'New',8,2,'current')
 
@@ -36,6 +35,7 @@ all_workers = [worker_yael, worker_elad]
 
 for task in all_tasks:
     # Check if the task is uniqe:
+    found = False
     for worker in all_workers:
         if task.id in  worker.unique_tasks:
             task.set_task('assigneed', worker.name)
@@ -54,6 +54,7 @@ for task in all_tasks:
         if task.id in worker.optional_tasks:
             all_optinal_workers_len_uniqe[worker] = len(worker.unique_tasks)
             all_optinal_workers_exeprt[worker] = worker.optional_tasks.index(task.id)
+    print (all_optinal_workers_exeprt)
     #Decidenios
     min_num_uniqe = min(all_optinal_workers_len_uniqe.values())
     workers_with_less_uniqe = [k for k, v in all_optinal_workers_len_uniqe.items() if v == min_num_uniqe]
@@ -63,7 +64,30 @@ for task in all_tasks:
         update_workers(all_workers, workers_with_less_uniqe[0], task)
 
     else:
-        pass
+        ## In case of task with priority A prefer to asssinee it to the one with more avaliblity in first week
+        if task.priority == 'A':
+            all_optinal_workers_start_sprint = {}
+            possible_workers = [*all_optinal_workers_exeprt]
+            for pos_worker in possible_workers:
+                all_optinal_workers_start_sprint[pos_worker]=pos_worker.availaiblity_start_sprint
+            max_available_start = max(all_optinal_workers_start_sprint.values())
+            workers_with_max_avilabilty = [k for k, v in all_optinal_workers_start_sprint.items() if v == max_available_start]
+            task.set_task('assigneed', workers_with_max_avilabilty[0].name)
+            workers_with_max_avilabilty[0].update_assigneed_task(task)
+            update_workers(all_workers, workers_with_max_avilabilty[0], task)
+        else:
+            all_optinal_workers_sprint = {}
+            possible_workers = [*all_optinal_workers_exeprt]
+            print ( "aaaa " , possible_workers )
+            for pos_worker in possible_workers:
+                all_optinal_workers_sprint[pos_worker]=pos_worker.availaiblity
+            max_available = max(all_optinal_workers_sprint.values())
+            workers_with_max_avilabilty = [k for k, v in all_optinal_workers_sprint.items() if v == max_available]
+            task.set_task('assigneed', workers_with_max_avilabilty[0].name)
+            workers_with_max_avilabilty[0].update_assigneed_task(task)
+            update_workers(all_workers, workers_with_max_avilabilty[0], task)
+
+
         ## In case of task with priority A prefer to asssinee it to the one with more avaliblity in first week
         ## prefer to asssinee it to the one with more avaliblity
         ## max in  all_optinal_workers_exeprt, if more than one - avialable
