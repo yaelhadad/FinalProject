@@ -1,5 +1,5 @@
 REV_PER_HOUR = 0.5
-
+from functools import reduce
 class Worker:
 
     def __init__(self, name, expertise, impossible_tasks, availaiblity, availaiblity_start_sprint, count_current_work_hours,
@@ -37,15 +37,20 @@ class Worker:
     def update_qa_time(self,qa_time):
         self.qa_hours = qa_time
 
-    def update_assigneed_uniqe_task(self,task):
-       self.unique_tasks.remove(task.id)
+    def update_assigned_unique_task(self,task):
+       self.unique_tasks.remove(task)
 
-    def update_assigneed_task(self, task):
+    def update_assigned_task(self, task):
         if task.priority == 'A':
             self.availaiblity_start_sprint -= task.allotted_time
         self.availaiblity -= task.allotted_time
         self.count_current_work_hours +=task.allotted_time
         self.current_tasks.append(task.id)
+
+    def calculate_unique_tasks_budget(self):
+        return sum(i.allotted_time for i in self.unique_tasks)
+
+
 
     def print_current(self):
         print (self.name)
@@ -53,3 +58,4 @@ class Worker:
         print(self.availaiblity_start_sprint)
         print (self.count_current_work_hours)
         print(self.current_tasks)
+        print (self.calculate_unique_tasks_budget())
