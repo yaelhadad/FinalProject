@@ -16,6 +16,7 @@ def divide_task(worker,task):
     worker.update_assigned_task(task)
     update_workers(worker, task)
 
+########## TEST1
 A1 = Task('A1','ATEGen','BLA BLA', 6, None, 'A', 'New', 1,1,'current')
 A2 = Task('A2','GENERAL','BLA BLA', 6, None, 'A', 'New',2,2,'current')
 A3 = Task('A3','GENERAL','BLA BLA', 2, None, 'A', 'New',3,3,'current')
@@ -24,8 +25,6 @@ B2 = Task('B2','STILEDITOR','BLA BLA', 6, None, 'B', 'New',5,2,'current')
 B3 = Task('B3','ATEGen','BLA BLA', 2, None, 'B', 'New',6,3,'current')
 C1 = Task('C1','WAVER','BLA BLA', 6, None, 'C', 'New',7,1,'current')
 C2 = Task('C2','VCDSTIL','BLA BLA', 10, None, 'B', 'New',8,2,'current')
-
-
 worker_yael = Worker("Yael Hadad", ['ATEGen', 'SVFSTIL', 'STILEDITOR','WAVER', 'GENERAL'],['C2'], 50, 14, 0, [],'12345',
                      [A1,A2,A3,B1,B2,B3,C1],[A2,A3,C1],0,0,0,0,)
 worker_elad = Worker("Elad Motzny", ['CONVMGR', 'ATEGEN', 'STILEDITOR', 'VCDSTIL'],['A2','A3','C1'], 50, 8, 0,[], '12344',
@@ -35,10 +34,28 @@ worker_mayan = Worker("MAYYAN", ['CONVMGR', 'ATEGEN', 'STILEDITOR', 'VCDSTIL'],[
 all_tasks = [A1, A2, A3, B1, B2, B3,C1,C2]
 all_workers = [worker_yael, worker_elad,worker_mayan]
 
+########## TEST2
+A1 = Task('A1','ATEGen','BLA BLA', 4, None, 'A', 'New', 1,1,'current')
+A2 = Task('A2','GENERAL','BLA BLA',1, None, 'A', 'New',2,2,'current')
+A3 = Task('A3','GENERAL','BLA BLA',1, None, 'A', 'New',3,3,'current')
+B1 = Task('B1','ATEGen','BLA BLA', 1, None, 'B', 'New',4,1,'current')
+B2 = Task('B2','STILEDITOR','BLA BLA',3, None, 'B', 'New',5,2,'current')
+B3 = Task('B3','ATEGen','BLA BLA',8, None, 'B', 'New',6,3,'current')
+
+
+worker_yael = Worker("Yael Hadad", ['ATEGen', 'SVFSTIL', 'STILEDITOR','WAVER', 'GENERAL'],['C2'], 6, 3, 0, [],'12345',
+                     [A1,A2,A3,B1,B2],[A2,A3,B1],0,0,0,0,)
+worker_elad = Worker("Elad Motzny", ['CONVMGR', 'ATEGEN', 'STILEDITOR', 'VCDSTIL'],['A2','A3','C1'], 12, 11, 0,[], '12344',
+                    [A1,B2,B3],[B3],0,0,0,0)
+
+all_tasks = [A1, A2, A3, B1, B2, B3]
+all_workers = [worker_yael, worker_elad]
+
 for worker in all_workers:
     worker.print_current()
 
 for task in all_tasks:
+
     # Check if the task is unique:
     found = False
     for worker in all_workers:
@@ -49,15 +66,25 @@ for task in all_tasks:
             break
     if found:
         continue
-    ###### Decide what to do if more than 1 people can do the task: #####
-    # Allocate the relevant workers and extract the total hours of their unique tasks
+    ###### Decide what to do if a task appear in the optional list of multiple workers: #####
+
+    # Allocate the relevant workers
+    # Extract the total hours of their unique tasks
+    # Verify that if they will get the task, it will not effect their unique tasks
     all_optional_workers_unique_tasks_budget = {}
     for worker in all_workers:
         if task in worker.optional_tasks:
-            all_optional_workers_unique_tasks_budget[worker] = worker.calculate_unique_tasks_budget()
+            if worker.verify_optional_task_before_devide(task):
+                all_optional_workers_unique_tasks_budget[worker] = worker.calculate_unique_tasks_budget()
+            else:
+                worker.update_assigned_optional_task(task)
 
     #Decidenios
+    #In case that only one worker has the minumum budget for uniqe tasks
+
+
     min_num_unique = min(all_optional_workers_unique_tasks_budget.values())
+
     workers_with_less_unique = [k for k, v in all_optional_workers_unique_tasks_budget.items() if v == min_num_unique]
     if (len(workers_with_less_unique) == 1):
         divide_task(workers_with_less_unique[FIRST], task)
