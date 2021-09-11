@@ -53,9 +53,19 @@ class Worker:
     def calculate_unique_tasks_budget(self):
         return sum(i.allotted_time for i in self.unique_tasks)
 
+    def verify_unique_task_before_devide(self, task):
+        availability = self.availaiblity - task.allotted_time
+        if task.priority == 'A':
+            avalialibilty_A = self.availaiblity_start_sprint - task.allotted_time
+            if avalialibilty_A < 0:
+                return False
+        if availability < 0:
+            return False
+        return True
+
+
     def verify_optional_task_before_devide(self, task):
         optional_availability = self.availaiblity - task.allotted_time
-
         A_budget = 0
         if task.priority == 'A':
             optinal_avalialibilty_A = self.availaiblity_start_sprint - task.allotted_time
