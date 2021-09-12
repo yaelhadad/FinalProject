@@ -2,13 +2,12 @@ REV_PER_HOUR = 0.5
 from functools import reduce
 class Worker:
 
-    def __init__(self, name, expertise, impossible_tasks, availaiblity, availaiblity_start_sprint, count_current_work_hours,
+    def __init__(self, name, expertise, availaiblity, availaiblity_start_sprint, count_current_work_hours,
               current_tasks, password, optional_tasks, unique_tasks, rev_hours=0, dedicated_hours=0, qa_hours=0, total_prev_hours=0):
 
         self.name = name
         self.password = password
         self.expertise = expertise
-        self.impossible_tasks = impossible_tasks
         self.availaiblity_start_sprint =availaiblity_start_sprint
         self.count_current_work_hours =count_current_work_hours
         self.current_tasks= current_tasks
