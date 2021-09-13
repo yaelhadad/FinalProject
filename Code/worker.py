@@ -2,22 +2,37 @@ REV_PER_HOUR = 0.5
 from functools import reduce
 class Worker:
 
-    def __init__(self, name, expertise, availaiblity, availaiblity_start_sprint, count_current_work_hours,
-              current_tasks, password, optional_tasks, unique_tasks, rev_hours=0, dedicated_hours=0, qa_hours=0, total_prev_hours=0):
+    def __init__(self, name, role,password, expertise, availability, availability_start_sprint, count_current_hours,
+              current_tasks ):
 
         self.name = name
+        self.role = role
         self.password = password
         self.expertise = expertise
-        self.availaiblity_start_sprint =availaiblity_start_sprint
-        self.count_current_work_hours =count_current_work_hours
-        self.current_tasks= current_tasks
-        self.optional_tasks =optional_tasks
-        self.unique_tasks =unique_tasks
-        self.availaiblity = availaiblity
-        self.dedicated_hours =dedicated_hours
-        self.total_prev_hours =total_prev_hours
-        self.rev_hours = rev_hours
-        self.qa_hours = qa_hours
+        self.availability = availability
+        self.availability_start_sprint = availability_start_sprint
+        self.count_current_hours = count_current_hours
+        self.current_tasks = current_tasks
+
+
+
+
+    # def __init__(self, name, expertise, availaiblity, availaiblity_start_sprint, count_current_work_hours,
+    #           current_tasks, password, optional_tasks, unique_tasks, rev_hours=0, dedicated_hours=0, qa_hours=0, total_prev_hours=0):
+    #
+    #     self.name = name
+    #     self.password = password
+    #     self.expertise = expertise
+    #     self.availaiblity_start_sprint =availaiblity_start_sprint
+    #     self.count_current_work_hours =count_current_work_hours
+    #     self.current_tasks= current_tasks
+    #     self.optional_tasks =optional_tasks
+    #     self.unique_tasks =unique_tasks
+    #     self.availaiblity = availaiblity
+    #     self.dedicated_hours =dedicated_hours
+    #     self.total_prev_hours =total_prev_hours
+    #     self.rev_hours = rev_hours
+    #     self.qa_hours = qa_hours
 
 
     # def __init__(self, name,password, rev_hours=0, qa_hours =0, new_hours=0, inprog_hours=0):
@@ -89,6 +104,15 @@ class Worker:
            count_tasks +=un_task.allotted_time
         return count_tasks
 
+    def enough_time(self, task):
+        if task.priority == 'A':
+            optinal_avalialibilty_A = self.availability_start_sprint - task.allotted_time
+            if optinal_avalialibilty_A <= 0:
+                return False
+        optinal_avalialibilty = self.availability - task.allotted_time
+        if optinal_avalialibilty <= 0:
+            return False
+        return True
 
     def print_current(self):
         print (self.name)
