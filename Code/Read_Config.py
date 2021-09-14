@@ -3,17 +3,25 @@ from worker import Worker
 from task import Task
 
 all_workers = []
-A1 = Task('A1','ATEGEN','BLA BLA', 4, None, 'A', 'New', 1,1,'current')
-A2 = Task('A2','GENERAL','BLA BLA',4, None, 'A', 'New',2,2,'current')
-A3 = Task('A3','GENERAL','BLA BLA',1, None, 'A', 'New',3,3,'current')
-B1 = Task('B1','ATEGEN','BLA BLA', 1, None, 'B', 'New',4,1,'current')
-B2 = Task('B2','STILEDITOR','BLA BLA',7, None, 'B', 'New',5,2,'current')
-B3 = Task('B3','ATEGEN','BLA BLA',8, None, 'B', 'New',6,3,'current')
+# A1 = Task('A1','ATEGEN','BLA BLA', 4, None, 'A', 'New', 1,1,'current')
+# A2 = Task('A2','GENERAL','BLA BLA',4, None, 'A', 'New',2,2,'current')
+# A3 = Task('A3','GENERAL','BLA BLA',1, None, 'A', 'New',3,3,'current')
+# B1 = Task('B1','ATEGEN','BLA BLA', 1, None, 'B', 'New',4,1,'current')
+# B2 = Task('B2','STILEDITOR','BLA BLA',7, None, 'B', 'New',5,2,'current')
+# B3 = Task('B3','ATEGEN','BLA BLA',8, None, 'B', 'New',6,3,'current')
+#
+# all_tasks = [A1, A2, A3, B1, B2, B3]
 
-all_tasks = [A1, A2, A3, B1, B2, B3]
-
-
-df = pd.read_csv("configure.csv")
+# ########## TEST3 - IMPOSSIIBLE TASKS
+# A1 = Task('A1','ATEGEN','BLA BLA', 4, None, 'A', 'New', 1,1,'current')
+# A2 = Task('A2','GENERAL','BLA BLA',6, None, 'A', 'New',2,2,'current')
+# B1 = Task('B1','GENERAL','BLA BLA',2, None, 'B', 'New',3,3,'current')
+# B2 = Task('B2','ATEGEN','BLA BLA', 1, None, 'B', 'New',4,1,'current')
+# C1 = Task('C1','STILEDITOR','BLA BLA',7, None, 'C', 'New',5,2,'current')
+# C2 = Task('C2','ATEGEN','BLA BLA',8, None, 'C', 'New',6,3,'current')
+#
+# all_tasks = [A1, A2, B1, B2, C1,C2]
+# #df = pd.read_csv("configure.csv")
 
 NAME = "Name"
 ROLE = "Role"
@@ -30,56 +38,62 @@ IS_ASSIGNED = "Is the task assigned?"
 ONE = 1
 UNIQUE = True
 NOT_UNIQUE = False
-def set_worker(worker_info):
-    name = df.loc[worker_info, NAME]
-    role = df.loc[worker_info, ROLE]
-    availability = df.loc[worker_info, TOTAL]
-    availability_start = df.loc[worker_info, TOTAL_START]
-    expertise = df.loc[worker_info, EXPERTISE]
-    locals()[name] = Worker(name, None, role, expertise, availability, availability_start, 0, [])
-    all_workers.append(locals()[name])
 
-def create_db_possible_tasks():
-    column_names = [NAME, EXPERTISE, TASK, ALLOTTED_TIME,IS_UNIQUE, BUDGET_FOR_UNIQUE_BELLOW, SPRINT,
-                    STATUS, IS_ASSIGNED]
-    db = pd.DataFrame(columns=column_names)
-    return db
+class Config():
 
+    def __init__(self,config_file,all_tasks):
+        self.config_file = config_file
+        self.all_tasks = all_tasks
 
-def who_can_do_it(task):
-    possible_workers = []
-    for worker in all_workers:
-        if (task.subject in worker.expertise) and (worker.enough_time(task)):
-            possible_workers.append(worker)
-    return possible_workers
+    def set_worker(self,worker_info):
+        name = self.config_file.loc[worker_info, NAME]
+        role = self.config_file.loc[worker_info, ROLE]
+        availability = self.config_file.loc[worker_info, TOTAL]
+        availability_start = self.config_file.loc[worker_info, TOTAL_START]
+        expertise = self.config_file.loc[worker_info, EXPERTISE]
+        locals()[name] = Worker(name, None, role, expertise, availability, availability_start, 0, [])
+        all_workers.append(locals()[name])
 
-def update_initial_information_db_table(db,name, subject, task, is_unique,i):
-   new_info = [name,subject, task.id, task.allotted_time, is_unique,0,0,0,0]
-   db.loc[i] = new_info
+    def create_db_possible_tasks(self):
+        column_names = [NAME, EXPERTISE, TASK, ALLOTTED_TIME,IS_UNIQUE, BUDGET_FOR_UNIQUE_BELLOW, SPRINT,
+                        STATUS, IS_ASSIGNED]
+        db = pd.DataFrame(columns=column_names)
+        return db
 
+    def who_can_do_it(self,task):
+        possible_workers = []
+        for worker in all_workers:
+            if (task.subject in worker.expertise) and (worker.enough_time(task)):
+                possible_workers.append(worker)
+        return possible_workers
 
-
-#### Main
-for idx, row in df.iterrows():
-    set_worker(idx)
-
-df_tasks_db = create_db_possible_tasks()
-print (df_tasks_db)
-i = 0
-for task in all_tasks:
-    subject = task.subject
-    possibile_workers = who_can_do_it(task)
-    if len(possibile_workers) == ONE:
-        update_initial_information_db_table(df_tasks_db, possibile_workers[0].name, subject, task, UNIQUE,i)
-        i += 1
-    else:
-        for pos_worker in possibile_workers:
-            update_initial_information_db_table(df_tasks_db, pos_worker.name, subject, task, NOT_UNIQUE,i)
-            i += 1
+    def update_initial_information_db_table(self,db,name, subject, task, is_unique,i):
+        new_info = [name,subject, task.id, task.allotted_time, is_unique,0,0,0,0]
+        db.loc[i] = new_info
 
 
-print(df_tasks_db)
-df_tasks_db.to_csv(r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\Try_Pandas\s6.csv")
+    def run(self):
+        #### Main
+        for idx, row in self.config_file.iterrows():
+            self.set_worker(idx)
+
+        df_tasks_db = self.create_db_possible_tasks()
+        print (df_tasks_db)
+        i = 0
+        for task in self.all_tasks:
+            subject = task.subject
+            possibile_workers = self.who_can_do_it(task)
+            if len(possibile_workers) == ONE:
+                self.update_initial_information_db_table(df_tasks_db, possibile_workers[0].name, subject, task, UNIQUE,i)
+                i += 1
+            else:
+                for pos_worker in possibile_workers:
+                    self.update_initial_information_db_table(df_tasks_db, pos_worker.name, subject, task, NOT_UNIQUE,i)
+                    i += 1
+
+
+        print(df_tasks_db)
+        df_tasks_db.to_csv(r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\Try_Pandas\s7.csv")
 
 
 
