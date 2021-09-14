@@ -48,18 +48,18 @@ class Gen_Task:
 
 
     def run(self):
-        for idx, row in self.sort_queue.loc[FIRST:self.ALL_TASKS_RANGE_A].iterrows():
+        for idx, row in self.sort_queue.loc[FIRST:self.ALL_TASKS_RANGE_A-1].iterrows():
             self.set_task('A', idx, idx)
 
 
         count_B =0
-        for idx, row in self.sort_queue.loc[self.ALL_TASKS_RANGE_A:self.ALL_TASKS_RANGE_B].iterrows():
+        for idx, row in self.sort_queue.loc[self.ALL_TASKS_RANGE_A:self.ALL_TASKS_RANGE_B-1].iterrows():
             self.set_task('B', idx, count_B)
             count_B += 1
 
 
         count_C =0
-        for idx, row in self.sort_queue.loc[self.ALL_TASKS_RANGE_B:self.LEN_ALL_TASKS].iterrows():
+        for idx, row in self.sort_queue.loc[self.ALL_TASKS_RANGE_B:self.LEN_ALL_TASKS-1].iterrows():
             self.set_task('C', idx, count_C)
             count_C += 1
 
