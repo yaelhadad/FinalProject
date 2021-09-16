@@ -10,7 +10,7 @@ ASSIGNEE = 'Assignee'
 STATUS = 'Status'
 PREV = 'Previous'
 CURRENT = 'Current'
-TESTING = 'Testing'
+PROGRESSIVE = 'Progressive'
 REVIEW = 'Review'
 FIRST = 0
 ID = "ID"
@@ -41,12 +41,12 @@ class GenerateTask:
         assignee = self.sort_queue.loc[row, ASSIGNEE]
         status = self.sort_queue.loc[row, STATUS]
         general_location = row
-        if status == TESTING or status == REVIEW:
+        if status == PROGRESSIVE or status == REVIEW:
             sprint = PREV
         else:
             sprint = CURRENT
         locals()[name] = Task(name, identify, subject, description, allotted_time, assignee, priority, status,
-                              general_location,location_in_queue,0)
+                              general_location,location_in_queue,sprint)
         self.all_tasks.append(locals()[name])
 
     def sel_all_tasks_by_priority(self, start_range, end_range, priority, general_index, priority_index):
