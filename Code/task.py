@@ -1,6 +1,9 @@
 class Task:
-    def __init__(self,id,subject, description,allotted_time,assignee, priority,status,general_location,location_in_queue,sprint ):
-        self.id = id
+    def __init__(self, name,identifier,subject, description, allotted_time, assignee, priority, status,
+                 general_location, location_in_queue, sprint):
+
+        self.name = name
+        self.identifier = identifier
         self.subject = subject
         self.description = description
         self.allotted_time = allotted_time
@@ -9,7 +12,7 @@ class Task:
         self.general_location = general_location
         self.location_in_queue = location_in_queue
         self.status = status
-        #prev or current
+        # prev or current
         self.sprint = sprint
 
     def get_status(self):
@@ -20,4 +23,4 @@ class Task:
         self.assignee = assignee
 
     def print_task(self):
-        print (self.status , self.assignee)
+        print(self.status, self.assignee)
