@@ -16,7 +16,7 @@ SPRINT = "Sprint"
 STATUS = "Status"
 DESCRIPTION = "Description"
 IDENTIFIER = "ID"
-IS_ASSIGNED = "Is the task assigned?"
+IS_ASSIGNED = "Assigned from last sprint"
 PREV = 'Previous'
 ONE = 1
 UNIQUE = True
@@ -80,4 +80,4 @@ class Config:
                     i += 1
 
         print(df_tasks_db)
-        df_tasks_db.to_csv(r"C:\Users\Yael Hadad\Desktop\She codes\Final project\Tests\Test1\temp_db_table.csv")
+        df_tasks_db.to_csv(r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test2\temp_db_table.csv")
