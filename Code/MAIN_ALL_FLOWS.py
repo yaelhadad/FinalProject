@@ -1,10 +1,9 @@
 import pandas as pd
-from task import Task
-from worker import Worker
-from Generate_Tasks import Gen_Task
+from Generate_Tasks import GenerateTask
 from Read_Config import Config
+from Prev_Sprint import PreviousSprint
 import argparse
-import math
+
 
 
 def parse_args():
@@ -19,28 +18,39 @@ def parse_args():
 
 
 
-### from the tasks file, generate all_tasks and set priority
-
-### from the configure file generate te task to worker table
-
 def main():
     args = parse_args()
     ## Valdaion if one of the file does not exits, test for it
+    ## TBD
     df_config = pd.read_csv(args.config)
     df_tasks = pd.read_csv(args.tasks)
-    tasks = Gen_Task(df_tasks)
-    tasks.run()
-    config = Config(df_config,tasks.all_tasks)
-    config.run()
+
+    ### from the tasks file, generate all_tasks and set priority
+    tasks = GenerateTask(df_tasks)
+    ### from the configure file generate the main task to worker table
+    db_tasks_table = Config(df_config, tasks.all_tasks).run()
+    ### Previous sprint update the main task to worker table
+    prev = PreviousSprint(db_tasks_table)
+    print(prev.config_file)
+    ### Previous sprint:
+    # 1) iterate the previous sprint
+    # 2) If name is identical to the name of assigned from lase sprint:
+    #          -) set this task to be unique, it will be handle in the algorithem
+    #           -) remove it from the others - mabiy move it to backup list
+
+
+
+
+
 
 
 main()
 
 
-# read the ask to worker table and:
+# read the task to worker table and:
 # 1)sort by worker
 # 2) Validation
-# 3)fill another information for each task in the tavbe
+# 3)fill another information for each task in the table
 # e.g- how much unique for the worker less than it
 
 
