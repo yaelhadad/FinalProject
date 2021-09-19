@@ -31,6 +31,7 @@ class GenerateTask:
         self.ALL_TASKS_RANGE_A = int(math.floor(self.LEN_ALL_TASKS / 3))
         self.ALL_TASKS_RANGE_B = self.ALL_TASKS_RANGE_A * 2
         self.all_tasks = []
+        self.run()
 
     def set_task(self, priority, row, location_in_queue):
         name = priority + str(location_in_queue)
@@ -70,7 +71,7 @@ class GenerateTask:
                                                           last_task_group2, count)
 
         ### Testing
-        for task in self.all_tasks:
-            print(task.identifier)
-            print (task.name)
-            print(task.subject)
+        # for task in self.all_tasks:
+        #     print(task.identifier)
+        #     print (task.name)
+        #     print(task.subject)

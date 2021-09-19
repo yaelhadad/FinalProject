@@ -2,6 +2,7 @@ import pandas as pd
 from worker import Worker
 
 all_workers = []
+all_impossible_tasks = []
 
 NAME = "Name"
 ROLE = "Role"
@@ -18,7 +19,9 @@ DESCRIPTION = "Description"
 IDENTIFIER = "ID"
 IS_ASSIGNED = "Assigned from last sprint"
 PREV = 'Previous'
+IMPOSSIBLE = "IMPOSSIBLE"
 ONE = 1
+ZERO = 0
 UNIQUE = True
 NOT_UNIQUE = False
 
@@ -46,6 +49,7 @@ class Config:
         self.config_file = config_file
         self.all_tasks = all_tasks
 
+
     def set_worker(self, worker_info):
         name = self.config_file.loc[worker_info, NAME]
         role = self.config_file.loc[worker_info, ROLE]
@@ -55,6 +59,7 @@ class Config:
         locals()[name] = Worker(name, None, role, expertise, availability, availability_start, 0, [])
         all_workers.append(locals()[name])
 
+
     @staticmethod
     def who_can_do_it(task):
         possible_workers = []
@@ -62,6 +67,8 @@ class Config:
             if (task.subject in worker.expertise) and (worker.enough_time(task)):
                 possible_workers.append(worker)
         return possible_workers
+
+
 
     def run(self):
         for idx, row in self.config_file.iterrows():
@@ -74,10 +81,13 @@ class Config:
             if len(possible_workers) == ONE:
                 update_initial_information_db_table(df_tasks_db, possible_workers[0].name, subject, task, UNIQUE, i)
                 i += 1
-            else:
+            if len(possible_workers) > ONE:
                 for pos_worker in possible_workers:
                     update_initial_information_db_table(df_tasks_db, pos_worker.name, subject, task, NOT_UNIQUE, i)
                     i += 1
+            if len(possible_workers) == ZERO:
+                all_impossible_tasks.append(task)
+                print(str(task.identifier) + ' ' + task.name + IMPOSSIBLE)
 
         print(df_tasks_db)
-        df_tasks_db.to_csv(r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test2\temp_db_table.csv")
+        return df_tasks_db

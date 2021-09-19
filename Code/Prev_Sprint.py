@@ -44,7 +44,7 @@ class PreviousSprint:
         for task_to_be_updated in self.all_tasks_to_be_removed:
             self.remove_tasks_prev_sprint_from_possible_worker(task_to_be_updated)
 
-        self.config_file.to_csv(
-            r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test3\temp_db_table_gold.csv")
-        self.backup.to_csv(
-            r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test3\back_up_prev_sprint_gold.csv")
+        # self.config_file.to_csv(
+        #     r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test3\temp_db_table_gold.csv")
+        # self.backup.to_csv(
+        #     r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test3\back_up_prev_sprint_gold.csv")
