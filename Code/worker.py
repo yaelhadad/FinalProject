@@ -15,32 +15,19 @@ class Worker:
         self.count_current_hours = count_current_hours
         self.current_tasks = current_tasks
 
-    def update_review_time(self, num_tasks):
-        self.rev_hours = num_tasks * REV_PER_HOUR
-
-    def update_qa_time(self, qa_time):
-        self.qa_hours = qa_time
-
-    def update_assigned_unique_task(self, task):
-        self.unique_tasks.remove(task)
-
-    def update_assigned_optional_task(self, task):
-        self.optional_tasks.remove(task)
 
     def update_assigned_task(self, task):
         if task.priority == 'A':
-            self.availaiblity_start_sprint -= task.allotted_time
-        self.availaiblity -= task.allotted_time
-        self.count_current_work_hours += task.allotted_time
-        self.current_tasks.append(task.id)
+            self.availability_start_sprint -= task.allotted_time
+        self.availability -= task.allotted_time
+        self.count_current_hours += task.allotted_time
+        self.current_tasks.append(task.identifier)
 
-    def calculate_unique_tasks_budget(self):
-        return sum(i.allotted_time for i in self.unique_tasks)
 
     def verify_unique_task_before_devide(self, task):
-        availability = self.availaiblity - task.allotted_time
+        availability = self.availability - task.allotted_time
         if task.priority == 'A':
-            avalialibilty_A = self.availaiblity_start_sprint - task.allotted_time
+            avalialibilty_A = self.availability_start_sprint - task.allotted_time
             if avalialibilty_A < 0:
                 return False
         if availability < 0:
@@ -48,10 +35,10 @@ class Worker:
         return True
 
     def verify_optional_task_before_devide(self, task):
-        optional_availability = self.availaiblity - task.allotted_time
+        optional_availability = self.availability - task.allotted_time
         A_budget = 0
         if task.priority == 'A':
-            optinal_avalialibilty_A = self.availaiblity_start_sprint - task.allotted_time
+            optinal_avalialibilty_A = self.availability_start_sprint - task.allotted_time
             A_budget = self.caluculate_conflict_A()
             if A_budget > optinal_avalialibilty_A:
                 return False
@@ -85,8 +72,8 @@ class Worker:
 
     def print_current(self):
         print(self.name)
-        print("availbilty", self.availaiblity)
-        print("start", self.availaiblity_start_sprint)
-        print("current_hours", self.count_current_work_hours)
+        print("availbilty", self.availability)
+        print("start", self.availability_start_sprint)
+        print("current_hours", self.count_current_hours)
         print(self.current_tasks)
-        print(self.calculate_unique_tasks_budget())
+
