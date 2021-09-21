@@ -1,0 +1,12 @@
+,Name,Expertise,Task,Description,ID,Allotted time,Is the task Unique?,Total time for less important unique tasks,Sprint,Status,Assigned from last sprint
+0,Elad Motzny,CONVMGR,A0,AteGen - subr,5631,7.5,True,0,Previous,Progressive,Elad Motzny
+3,Maayan Lavi,ATEGEN,A1,AteGen - subr comments generated incorrectly,5632,2.0,False,0,Current,New,
+4,Yael Hadad,ATEGEN,A2,AteGen -uflex,5638,3.0,True,0,Previous,Progressive,Yael Hadad
+6,Yael Hadad,GENERAL,B0,smt8vt : scan,5645,6.5,True,0,Previous,Progressive,Yael Hadad
+7,Yael Hadad,GENERAL,B1,smt8vt :loops,5647,2.5,True,0,Current,New,
+8,Yael Hadad,GENERAL,B2,smt8vt : comments,5648,2.5,True,0,Current,New,
+9,Yael Hadad,GENERAL,C0,smt8vt : PA [Backend],5642,2.5,True,0,Current,New,
+10,Yael Hadad, STILEDITOR,C1,stileditor- bla bla,5630,13.0,False,6.5,Current,New,
+12,Yael Hadad, STILEDITOR,C2,stileditor : PA [Front End],5640,6.5,True,0,Previous,Progressive,Yael Hadad
+14,Elad Motzny,CONVMGR,C3,conv- dd,5637,2.0,True,0,Current,New,
+16,Elad Motzny,ATEGEN,C4,AteGen - bla,5636,2.0,False,0,Current,New,
