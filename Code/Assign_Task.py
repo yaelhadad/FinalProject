@@ -13,7 +13,6 @@ AVAILABILITY = "availability"
 FIRST = 0
 
 
-
 def get_worker(name):
     for worker in all_workers:
         if name == worker.name:
@@ -34,7 +33,6 @@ def find_worker_with_max_availability(df):
     df = df.sort_values(by=[AVAILABILITY], ascending=False)
     needless_indexes = df.index.values
     return df.iloc[FIRST][NAME], np.delete(needless_indexes, FIRST)
-
 
 
 class Assign:
@@ -78,19 +76,11 @@ class Assign:
             worker, index_drop = find_worker_with_max_availability(df_min_budget)
             assign_task(task, get_worker(worker))
             self.config_file = self.config_file.drop(index_drop)
-            print(worker)
-            print(task.name)
-
-        # df_min_budget = df_possible_workers.sort_values(by=[BUDGET_UNIQUE]).head(1)
-        # for idx, row in df_min_budget.iterrows():
-        #     name = row.loc[NAME]
-        # assign_task(task, get_worker(name))
-        # self.update_workers(df_possible_workers.index, df_min_budget.index)
 
     def run(self):
         print(self.config_file)
         self.config_file.to_csv(
-            r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test5\before_assign_gold.csv")
+            r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test6\before_assign_gold.csv")
         self.config_file = self.config_file.sort_values(by=[TASK])
         # Check if the task is unique:
         for idx, row in self.config_file.iterrows():
@@ -100,8 +90,5 @@ class Assign:
             # Decide what to do if a task appear in the optional list of multiple workers
             if not row.loc[IS_UNIQUE] and task.status != ASSIGNED:
                 self.decide_who_will_assign(self.get_task(row.loc[TASK]))
-        for worker in all_workers:
-            worker.print_current()
-        print(self.config_file)
         self.config_file.to_csv(
-            r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test5\after_assign_gold.csv")
+            r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test6\after_assign_gold.csv")
