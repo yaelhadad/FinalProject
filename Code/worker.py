@@ -11,6 +11,7 @@ class Worker:
         self.password = password
         self.expertise = expertise
         self.availability = availability
+        self.availability_initial = availability
         self.availability_start_sprint = availability_start_sprint
         self.count_current_hours = count_current_hours
         self.current_tasks = current_tasks
@@ -49,8 +50,12 @@ class Worker:
         return True
 
     def print_current(self):
+        print("\n")
         print(self.name)
-        print("availbilty", self.availability)
-        print("start", self.availability_start_sprint)
-        print("current_hours", self.count_current_hours)
+        print("avalibility", self.availability)
+        print("initial avalibility", self.availability_initial)
+        print("avalibility in the first week", self.availability_start_sprint)
+        print("current_hours:", self.count_current_hours)
+        budget = str(self.count_current_hours/self.availability_initial*100)
+        print("budget is: %s" % (budget) + "%")
         print(self.current_tasks)

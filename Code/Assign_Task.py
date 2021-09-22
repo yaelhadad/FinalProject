@@ -11,6 +11,7 @@ ONLY_ONE = 1
 ONE = -1
 AVAILABILITY = "availability"
 FIRST = 0
+SECOND = 1
 
 
 def get_worker(name):
@@ -47,6 +48,9 @@ class Assign:
                 return task
         return None
 
+    def remove_needless_optional_workers (self,index_drop):
+        self.config_file = self.config_file.drop(index_drop)
+
     def update_workers(self, index, min_budget_index):
         set_difference = set(index) - set(min_budget_index)
         list_difference = list(set_difference)
@@ -60,22 +64,22 @@ class Assign:
             worker = get_worker(name)
             if not worker.verify_optional_task_before_devide(task, budget):
                 df_possible_workers = df_possible_workers.drop(idx)
-                self.config_file = self.config_file.drop(idx)
+                self.remove_needless_optional_workers(idx)
         if len(df_possible_workers.index) == ONLY_ONE and task.status != ASSIGNED:
             assign_task(task, get_worker(df_possible_workers.iloc[ONE][NAME]))
             return
         df_min_budget = df_possible_workers.sort_values(by=[BUDGET_UNIQUE])
         # Case that there is only one worker with the most minimal budget
-        if df_min_budget.iloc[0][BUDGET_UNIQUE] != df_min_budget.iloc[1][BUDGET_UNIQUE]:
-            assign_task(task, get_worker(df_min_budget.head(1).iloc[ONE][NAME]))
-            self.update_workers(df_possible_workers.index, df_min_budget.head(1).index)
+        if df_min_budget.iloc[FIRST][BUDGET_UNIQUE] != df_min_budget.iloc[SECOND][BUDGET_UNIQUE]:
+            assign_task(task, get_worker(df_min_budget.head(ONLY_ONE).iloc[ONE][NAME]))
+            self.update_workers(df_possible_workers.index, df_min_budget.head(ONLY_ONE).index)
             return
         else:
             # Case that there are many workers with the most minimal budget
             # Pick by the max availability
             worker, index_drop = find_worker_with_max_availability(df_min_budget)
             assign_task(task, get_worker(worker))
-            self.config_file = self.config_file.drop(index_drop)
+            self.remove_needless_optional_workers(index_drop)
 
     def run(self):
         print(self.config_file)
