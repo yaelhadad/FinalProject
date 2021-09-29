@@ -1,33 +1,13 @@
 import pandas as pd
 from worker import Worker
+import Defs
 
 all_workers = []
 all_impossible_tasks = []
 
-NAME = "Name"
-ROLE = "Role"
-TOTAL = "Total hours"
-TOTAL_START = "Total hours at begin"
-EXPERTISE = "Expertise"
-TASK = "Task"
-ALLOTTED_TIME = "Allotted time"
-BUDGET_FOR_UNIQUE_BELLOW = "Total time for less important unique tasks"
-IS_UNIQUE = "Is the task Unique?"
-SPRINT = "Sprint"
-STATUS = "Status"
-DESCRIPTION = "Description"
-IDENTIFIER = "ID"
-IS_ASSIGNED = "Assigned from last sprint"
-PREV = 'Previous'
-IMPOSSIBLE = "IMPOSSIBLE"
-ONE = 1
-ZERO = 0
-UNIQUE = True
-NOT_UNIQUE = False
-
 
 def update_initial_information_db_table(db, name, subject, task, is_unique, i):
-    if task.sprint == PREV:
+    if task.sprint == Defs.PREV:
         assignee = task.assignee
     else:
         assignee = None
@@ -37,8 +17,8 @@ def update_initial_information_db_table(db, name, subject, task, is_unique, i):
 
 
 def create_db_possible_tasks():
-    column_names = [NAME, EXPERTISE, TASK, DESCRIPTION, IDENTIFIER, ALLOTTED_TIME, IS_UNIQUE,
-                    BUDGET_FOR_UNIQUE_BELLOW, SPRINT, STATUS, IS_ASSIGNED]
+    column_names = [Defs.NAME, Defs.EXPERTISE, Defs.TASK, Defs.DESCRIPTION, Defs.IDENTIFIER, Defs.ALLOTTED_TIME,
+                    Defs.IS_UNIQUE, Defs.BUDGET_FOR_UNIQUE_BELLOW, Defs.SPRINT, Defs.STATUS, Defs.IS_ASSIGNED]
     db = pd.DataFrame(columns=column_names)
     return db
 
@@ -48,17 +28,16 @@ class Config:
     def __init__(self, config_file, all_tasks):
         self.config_file = config_file
         self.all_tasks = all_tasks
-
+        self.workers = all_workers
 
     def set_worker(self, worker_info):
-        name = self.config_file.loc[worker_info, NAME]
-        role = self.config_file.loc[worker_info, ROLE]
-        availability = self.config_file.loc[worker_info, TOTAL]
-        availability_start = self.config_file.loc[worker_info, TOTAL_START]
-        expertise = self.config_file.loc[worker_info, EXPERTISE]
+        name = self.config_file.loc[worker_info, Defs.NAME]
+        role = self.config_file.loc[worker_info, Defs.ROLE]
+        availability = self.config_file.loc[worker_info, Defs.TOTAL]
+        availability_start = self.config_file.loc[worker_info, Defs.TOTAL_START]
+        expertise = self.config_file.loc[worker_info, Defs.EXPERTISE]
         locals()[name] = Worker(name, None, role, expertise, availability, availability_start, 0, [])
         all_workers.append(locals()[name])
-
 
     @staticmethod
     def who_can_do_it(task):
@@ -68,8 +47,6 @@ class Config:
                 possible_workers.append(worker)
         return possible_workers
 
-
-
     def run(self):
         for idx, row in self.config_file.iterrows():
             self.set_worker(idx)
@@ -78,16 +55,17 @@ class Config:
         for task in self.all_tasks:
             subject = task.subject
             possible_workers = self.who_can_do_it(task)
-            if len(possible_workers) == ONE:
-                update_initial_information_db_table(df_tasks_db, possible_workers[0].name, subject, task, UNIQUE, i)
+            if len(possible_workers) == Defs.ONE:
+                update_initial_information_db_table(df_tasks_db, possible_workers[0].name, subject, task, Defs.UNIQUE,
+                                                    i)
                 i += 1
-            if len(possible_workers) > ONE:
+            if len(possible_workers) > Defs.ONE:
                 for pos_worker in possible_workers:
-                    update_initial_information_db_table(df_tasks_db, pos_worker.name, subject, task, NOT_UNIQUE, i)
+                    update_initial_information_db_table(df_tasks_db, pos_worker.name, subject, task, Defs.NOT_UNIQUE, i)
                     i += 1
-            if len(possible_workers) == ZERO:
+            if len(possible_workers) == Defs.ZERO:
                 all_impossible_tasks.append(task)
-                print(str(task.identifier) + ' ' + task.name + IMPOSSIBLE)
+                print(str(task.identifier) + ' ' + task.name + Defs.IMPOSSIBLE)
 
         print(df_tasks_db)
         return df_tasks_db

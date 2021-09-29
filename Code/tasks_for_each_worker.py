@@ -1,4 +1,4 @@
-NAME = 'Name'
+import Defs
 
 
 class TaskAssigned:
@@ -8,8 +8,9 @@ class TaskAssigned:
         self.workers = all_workers
 
     def generate_tasks(self):
-        dfs = dict(tuple(self.config_file.groupby(NAME)))
+        dfs = dict(tuple(self.config_file.groupby(Defs.NAME)))
         for worker in self.workers:
+            print(worker.name)
             df = dfs[worker.name]
             df.to_csv(r"C:\Users\Yael Hadad\Desktop\She codes\Final project\Tests\results\%s.csv"
                       % worker.name)
