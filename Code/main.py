@@ -1,9 +1,9 @@
 import pandas as pd
-from Generate_Tasks import GenerateTask
-from Read_Config import Config
-from Prev_Sprint import PreviousSprint
-from Budget_Unique_Tasks import BudgetUnique
-from Assign_Task import Assign
+from generate_tasks import GenerateTask
+from extract_workers_info import WorkerInfo
+from prev_sprint import PreviousSprint
+from budget_unique_tasks import BudgetUnique
+from assign_task import Assign
 from tasks_for_each_worker import TaskAssigned
 from validate import Valid
 import argparse
@@ -15,7 +15,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='''Generate tasks for each user''')
     parser.add_argument('-tasks', type=str,
                         help='path to tasks xls file', required=True)
-    parser.add_argument('-config', type=str,
+    parser.add_argument('-workers', type=str,
                         help='path to config file', required=True)
     args = parser.parse_args()
 
@@ -24,20 +24,20 @@ def parse_args():
 
 def main():
     args = parse_args()
-    if not os.path.isfile(args.config):
+    if not os.path.isfile(args.workers):
         print(FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), args.config))
         return
     if not os.path.isfile(args.tasks):
         print(FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), args.tasks))
         return
-    df_config = pd.read_csv(args.config)
-    df_tasks = pd.read_csv(args.tasks)
+    workers_table = pd.read_csv(args.workers)
+    tasks_table = pd.read_csv(args.tasks)
     # TBD - Finish the validation
-    Valid(df_config).valid_values()
+    Valid(workers_table).valid_values()
     # from the tasks file, generate all_tasks and set priority
-    tasks = GenerateTask(df_tasks)
+    tasks = GenerateTask(tasks_table)
     # From the configure file generate the "main task foo worker" table
-    config = Config(df_config, tasks.all_tasks)
+    config = WorkerInfo(workers_table, tasks.all_tasks)
     db_tasks_table = config.run()
     # Previous sprint update the main task to worker table
     prev = PreviousSprint(db_tasks_table)
@@ -45,9 +45,9 @@ def main():
     # unique tasks that are less urgent than the optional task
     budget_for_unique_tasks_table = BudgetUnique(prev.config_file).run()
     # Processing- the algorithm
-    assign = Assign(budget_for_unique_tasks_table, tasks.all_tasks)
+    assign = Assign(budget_for_unique_tasks_table, tasks.all_tasks, config.all_workers)
     assign_run = assign.run()
-    assign_tasks = TaskAssigned(assign.config_file, config.workers).generate_tasks()
+    assign_tasks = TaskAssigned(assign.config_file, config.all_workers).generate_tasks()
     # TBD -View availability
 
 

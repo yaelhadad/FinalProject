@@ -1,4 +1,4 @@
-import Defs
+from constants import Constants
 
 
 class TaskAssigned:
@@ -8,8 +8,8 @@ class TaskAssigned:
         self.workers = all_workers
 
     def generate_tasks(self):
-        dfs = dict(tuple(self.config_file.groupby(Defs.NAME)))
-        for worker in self.workers:
+        dfs = dict(tuple(self.config_file.groupby(Constants.NAME)))
+        for worker in self.workers.values():
             print(worker.name)
             try:
                 df = dfs[worker.name]
@@ -18,5 +18,5 @@ class TaskAssigned:
             except:
                 print(f'{worker.name} did not get tasks')
 
-        for worker in self.workers:
+        for worker in self.workers.values():
             worker.print_current()
