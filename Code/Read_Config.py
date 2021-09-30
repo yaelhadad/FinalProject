@@ -52,7 +52,7 @@ class Config:
             self.set_worker(idx)
         df_tasks_db = create_db_possible_tasks()
         i = 0
-        for task in self.all_tasks:
+        for name, task in self.all_tasks.items():
             subject = task.subject
             possible_workers = self.who_can_do_it(task)
             if len(possible_workers) == Defs.ONE:
@@ -67,5 +67,5 @@ class Config:
                 all_impossible_tasks.append(task)
                 print(str(task.identifier) + ' ' + task.name + Defs.IMPOSSIBLE)
 
-        print(df_tasks_db)
+        print (df_tasks_db)
         return df_tasks_db

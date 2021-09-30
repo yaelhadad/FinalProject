@@ -2,8 +2,6 @@ from task import Task
 import math
 import Defs
 
-all_tasks = []
-
 
 class GenerateTask:
 
@@ -14,7 +12,7 @@ class GenerateTask:
         self.LEN_ALL_TASKS = self.sort_queue.shape[Defs.FIRST]
         self.ALL_TASKS_RANGE_A = int(math.floor(self.LEN_ALL_TASKS / 3))
         self.ALL_TASKS_RANGE_B = self.ALL_TASKS_RANGE_A * 2
-        self.all_tasks = []
+        self.all_tasks = {}
         self.run()
 
     def set_task(self, priority, row, location_in_queue):
@@ -30,14 +28,22 @@ class GenerateTask:
             sprint = Defs.PREV
         else:
             sprint = Defs.CURRENT
-        locals()[name] = Task(name, identify, subject, description, allotted_time, assignee, priority, status,
-                              general_location,location_in_queue,sprint)
-        self.all_tasks.append(locals()[name])
+        return Task(name, identify, subject, description, allotted_time, assignee, priority, status,
+                    general_location, location_in_queue, sprint)
+        # locals()[name] = Task(name, identify, subject, description, allotted_time, assignee, priority, status,
+        #                       general_location,location_in_queue,sprint)
+        # self.all_tasks.append(locals()[name])
 
     def sel_all_tasks_by_priority(self, start_range, end_range, priority, general_index, priority_index):
         for general_index, row in self.sort_queue.loc[start_range: end_range - Defs.PREV_INDEX].iterrows():
-            self.set_task(priority, general_index, priority_index)
+            current_task = self.set_task(priority, general_index, priority_index)
             priority_index += 1
+            print (current_task)
+            self.all_tasks[current_task.name] = current_task
+
+        # for general_index, row in self.sort_queue.loc[start_range: end_range - Defs.PREV_INDEX].iterrows():
+        #     self.set_task(priority, general_index, priority_index)
+        #     priority_index += 1
         return general_index
 
     def run(self):
@@ -54,7 +60,7 @@ class GenerateTask:
         last_task_group3 = self.sel_all_tasks_by_priority(self.ALL_TASKS_RANGE_B, self.LEN_ALL_TASKS,Defs.PRIORITY_C,
                                                           last_task_group2, count)
 
-
+        print ("tasks" ,self.all_tasks)
         ### Testing
         # for task in self.all_tasks:
         #     print(task.identifier)

@@ -42,12 +42,6 @@ class Assign:
         self.config_file = config_file
         self.all_tasks = all_tasks
 
-    def get_task(self, name):
-        for task in self.all_tasks:
-            if name == task.name:
-                return task
-        return None
-
     def remove_needless_optional_workers (self,index_drop):
         self.config_file = self.config_file.drop(index_drop)
 
@@ -82,17 +76,17 @@ class Assign:
             self.remove_needless_optional_workers(index_drop)
 
     def run(self):
-        print(self.config_file)
+        print("asssign" ,self.config_file)
         self.config_file.to_csv(
             r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test6\before_assign_gold.csv")
         self.config_file = self.config_file.sort_values(by=[TASK])
-        # Check if the task is unique:
+           # Check if the task is unique:
         for idx, row in self.config_file.iterrows():
-            task = self.get_task(row.loc[TASK])
+            task = self.all_tasks[row.loc[TASK]]
             if row.loc[IS_UNIQUE]:
                 assign_task(task, get_worker(row.loc[NAME]))
             # Decide what to do if a task appear in the optional list of multiple workers
             if not row.loc[IS_UNIQUE] and task.status != ASSIGNED:
-                self.decide_who_will_assign(self.get_task(row.loc[TASK]))
+                self.decide_who_will_assign(self.all_tasks[row.loc[TASK]])
         self.config_file.to_csv(
             r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test6\after_assign_gold.csv")

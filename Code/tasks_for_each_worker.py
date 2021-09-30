@@ -11,8 +11,12 @@ class TaskAssigned:
         dfs = dict(tuple(self.config_file.groupby(Defs.NAME)))
         for worker in self.workers:
             print(worker.name)
-            df = dfs[worker.name]
-            df.to_csv(r"C:\Users\Yael Hadad\Desktop\She codes\Final project\Tests\results\%s.csv"
-                      % worker.name)
+            try:
+                df = dfs[worker.name]
+                df.to_csv(r"C:\Users\Yael Hadad\Desktop\She codes\Final project\Tests\results\%s.csv"
+                          % worker.name)
+            except:
+                print(f'{worker.name} did not get tasks')
+
         for worker in self.workers:
             worker.print_current()
