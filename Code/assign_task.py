@@ -13,6 +13,7 @@ class Assign:
         self.config_file = config_file
         self.all_tasks = all_tasks
         self.all_workers = all_workers
+        self.run()
 
     def find_worker_with_max_availability(self, df):
         for idx, row in df.iterrows():

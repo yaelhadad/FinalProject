@@ -5,6 +5,7 @@ class BudgetUnique:
 
     def __init__(self, config_file):
         self.config_file = config_file
+        self.run()
 
     def run(self):
         self.config_file = self.config_file.sort_values(by=[Constants.NAME, Constants.TASK], ascending=False)
@@ -19,4 +20,4 @@ class BudgetUnique:
                     self.config_file.at[idx, Constants.BUDGET_UNIQUE] = str(count_budget)
         self.config_file.to_csv(
             r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\Try_Pandas\sprint_23_9\BUDGET_BUGS.csv")
-        return self.config_file
+

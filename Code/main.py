@@ -37,17 +37,15 @@ def main():
     # from the tasks file, generate all_tasks and set priority
     tasks = GenerateTask(tasks_table)
     # From the configure file generate the "main task foo worker" table
-    config = WorkerInfo(workers_table, tasks.all_tasks)
-    db_tasks_table = config.run()
+    processing_workers = WorkerInfo(workers_table, tasks.all_tasks)
     # Previous sprint update the main task to worker table
-    prev = PreviousSprint(db_tasks_table)
+    prev = PreviousSprint(processing_workers.df_tasks_db)
     # Prepare Information fo the algorithm - What is the  budget of all the
     # unique tasks that are less urgent than the optional task
-    budget_for_unique_tasks_table = BudgetUnique(prev.config_file).run()
+    budget_for_unique_tasks_table = BudgetUnique(prev.config_file)
     # Processing- the algorithm
-    assign = Assign(budget_for_unique_tasks_table, tasks.all_tasks, config.all_workers)
-    assign_run = assign.run()
-    assign_tasks = TaskAssigned(assign.config_file, config.all_workers).generate_tasks()
+    assign = Assign(budget_for_unique_tasks_table.config_file, tasks.all_tasks, processing_workers.all_workers)
+    assign_tasks = TaskAssigned(assign.config_file, processing_workers.all_workers).generate_tasks()
     # TBD -View availability
 
 

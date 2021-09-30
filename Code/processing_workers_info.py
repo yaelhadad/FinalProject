@@ -27,6 +27,8 @@ class WorkerInfo:
         self.all_tasks = all_tasks
         self.all_workers = {}
         self.all_impossible_tasks = {}
+        self.df_tasks_db = None
+        self.run()
 
     def set_worker(self, worker_info):
         name = self.config_file.loc[worker_info, Constants.NAME]
@@ -51,23 +53,22 @@ class WorkerInfo:
 
     def run(self):
         self.set_all_workers()
-        df_tasks_db = create_db_possible_tasks()
+        self.df_tasks_db = create_db_possible_tasks()
         i = 0
         possible_workers =[]
         for task in self.all_tasks.values():
             subject = task.subject
             possible_workers = self.who_can_do_it(task)
             if len(possible_workers) == Constants.ONE:
-                update_initial_information_db_table(df_tasks_db, possible_workers[0].name, subject, task, Constants.UNIQUE,
+                update_initial_information_db_table(self.df_tasks_db, possible_workers[0].name, subject, task, Constants.UNIQUE,
                                                     i)
                 i += 1
             if len(possible_workers) > Constants.ONE:
                 for pos_worker in possible_workers:
-                    update_initial_information_db_table(df_tasks_db, pos_worker.name, subject, task, Constants.NOT_UNIQUE, i)
+                    update_initial_information_db_table(self.df_tasks_db, pos_worker.name, subject, task, Constants.NOT_UNIQUE, i)
                     i += 1
             if len(possible_workers) == Constants.ZERO:
                 self.all_impossible_tasks[task.name] = task
                 print(str(task.identifier) + ' ' + task.name + Constants.IMPOSSIBLE)
 
-        print(df_tasks_db)
-        return df_tasks_db
+
