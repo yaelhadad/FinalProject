@@ -1,6 +1,6 @@
 import pandas as pd
 from generate_tasks import GenerateTask
-from extract_workers_info import WorkerInfo
+from processing_workers_info import WorkerInfo
 from prev_sprint import PreviousSprint
 from budget_unique_tasks import BudgetUnique
 from assign_task import Assign
