@@ -45,7 +45,7 @@ def main():
     budget_for_unique_tasks_table = BudgetUnique(prev.config_file)
     # Processing- the algorithm
     assign = Assign(budget_for_unique_tasks_table.config_file, tasks.all_tasks, processing_workers.all_workers)
-    assign_tasks = TaskAssigned(assign.config_file, processing_workers.all_workers).generate_tasks()
+    assign_tasks_for_each_worker = TaskAssigned(assign.config_file, processing_workers.all_workers).generate_tasks()
     # TBD -View availability
 
 
