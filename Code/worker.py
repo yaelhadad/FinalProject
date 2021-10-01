@@ -1,5 +1,3 @@
-REV_PER_HOUR = 0.5
-
 
 class Worker:
 

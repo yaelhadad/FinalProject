@@ -1,4 +1,5 @@
 class Task:
+
     def __init__(self, name,identifier,subject, description, allotted_time, assignee, priority, status,
                  general_location, location_in_queue, sprint):
 
@@ -18,7 +19,7 @@ class Task:
     def get_status(self):
         return self.status
 
-    def set_task(self, status,assignee):
+    def set_task(self, status, assignee):
         self.status = status
         self.assignee = assignee
 

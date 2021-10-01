@@ -1,0 +1,8 @@
+ID,Status,Description,Subject,Assignee,Queue,Allotted time,Review Time
+5638,New,AteGen -uflex,ATEGEN,,0.1,6.5,0.5
+5645,New,smt8vt : scan,GENERAL,,0.1,6,0.5
+5647,New,smt8vt :loops,GENERAL,,0.15,2,0.5
+5648,New,smt8vt : comments,GENERAL,,0.15,2,0.5
+5640,New,smt8vt : PA [Front End],ATEGEN,,0.1,6,0.5
+5642,New,smt8vt : PA [Backend],GENERAL,,0.15,2,0.5
+5632,New,AteGen - subr comments generated incorrectly,ATEGEN,,0.01,1.5,0.5
