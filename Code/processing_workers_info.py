@@ -7,16 +7,23 @@ def update_initial_information_db_table(db, name, subject, task, is_unique, i):
     if task.sprint == Constants.PREV:
         assignee = task.assignee
     else:
-        assignee = None
+        assignee = 'None'
     new_info = [name, subject, task.name, task.description, task.identifier, task.allotted_time, is_unique, 0,
                 task.sprint, task.status, assignee]
     db.loc[i] = new_info
 
-
 def create_db_possible_tasks():
-    column_names = [Constants.NAME, Constants.EXPERTISE, Constants.TASK, Constants.DESCRIPTION, Constants.IDENTIFIER, Constants.ALLOTTED_TIME,
-                    Constants.IS_UNIQUE, Constants.BUDGET_FOR_UNIQUE_BELLOW, Constants.SPRINT, Constants.STATUS, Constants.IS_ASSIGNED]
-    db = pd.DataFrame(columns=column_names)
+    db = pd.DataFrame({Constants.NAME: pd.Series(dtype='str'),
+                       Constants.EXPERTISE: pd.Series(dtype='str'),
+                       Constants.TASK: pd.Series(dtype='str'),
+                       Constants.DESCRIPTION: pd.Series(dtype='str'),
+                       Constants.IDENTIFIER:  pd.Series(dtype='int'),
+                       Constants.ALLOTTED_TIME: pd.Series(dtype='float'),
+                       Constants.IS_UNIQUE: pd.Series(dtype='bool'),
+                       Constants.BUDGET_FOR_UNIQUE_BELLOW: pd.Series(dtype='float'),
+                       Constants.SPRINT: pd.Series(dtype='str'),
+                       Constants.STATUS: pd.Series(dtype='str'),
+                       Constants.IS_ASSIGNED: pd.Series(dtype='str')})
     return db
 
 
@@ -70,5 +77,6 @@ class WorkerInfo:
             if len(possible_workers) == Constants.ZERO:
                 self.all_impossible_tasks[task.name] = task
                 print(str(task.identifier) + ' ' + task.name + Constants.IMPOSSIBLE)
-
+        # self.df_tasks_db.to_csv(r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test8\proc_tasks.csv"
+        #           , index=False)
 
