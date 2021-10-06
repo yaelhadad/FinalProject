@@ -1,0 +1,14 @@
+Name,Expertise,Task,Description,ID,Allotted time,Is the task Unique?,Total time for less important unique tasks,Sprint,Status,Assigned from last sprint
+Yael Hadad,ATEGEN,A1,AteGen -uflex,5638,7.0,False,0.0,Current,New,None
+Elad Motzny,ATEGEN,A1,AteGen -uflex,5638,7.0,False,0.0,Current,New,None
+Yael Hadad,GENERAL,A2,smt8vt : scan,5645,6.5,True,0.0,Current,New,None
+Yael Hadad,GENERAL,A3,smt8vt :loops,5647,2.5,True,0.0,Current,New,None
+Yael Hadad,GENERAL,B1,smt8vt : comments,5648,2.5,True,0.0,Current,New,None
+Yael Hadad,ATEGEN,B2,smt8vt : PA [Front End],5640,6.5,False,0.0,Current,New,None
+Elad Motzny,ATEGEN,B2,smt8vt : PA [Front End],5640,6.5,False,0.0,Current,New,None
+Yael Hadad,GENERAL,B3,smt8vt : PA [Backend],5642,2.5,True,0.0,Current,New,None
+Yael Hadad,ATEGEN,C1,AteGen - subr comments generated incorrectly,5632,2.0,False,0.0,Current,New,None
+Elad Motzny,ATEGEN,C1,AteGen - subr comments generated incorrectly,5632,2.0,False,0.0,Current,New,None
+Maayan Lavi,ATEGEN,C1,AteGen - subr comments generated incorrectly,5632,2.0,False,0.0,Current,New,None
+Elad Motzny,CONVMGR,C2,AteGen - subr,5631,2.0,True,0.0,Current,New,None
+Elad Motzny,CONVMGR,C3,AteGen - subr2,2000,2.0,True,0.0,Current,New,None
