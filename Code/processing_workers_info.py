@@ -1,7 +1,7 @@
 import pandas as pd
 from worker import Worker
 from constants import Constants
-
+from validate import Valid, ValidPosTasks
 
 def update_initial_information_db_table(db, name, subject, task, is_unique, i):
     if task.sprint == Constants.PREV:
@@ -77,6 +77,7 @@ class WorkerInfo:
             if len(possible_workers) == Constants.ZERO:
                 self.all_impossible_tasks[task.name] = task
                 print(str(task.identifier) + ' ' + task.name + Constants.IMPOSSIBLE)
-        # self.df_tasks_db.to_csv(r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test8\proc_tasks.csv"
-        #           , index=False)
+        ValidPosTasks(self.df_tasks_db).is_empty()
+        self.df_tasks_db.to_csv(r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test8\proc_tasks.csv", index=False)
+        # TBD - Check if the the data frem is empty here. error out.
 

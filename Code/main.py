@@ -5,7 +5,7 @@ from prev_sprint import PreviousSprint
 from budget_unique_tasks import BudgetUnique
 from assign_task import Assign
 from tasks_for_each_worker import TaskAssigned
-from validate import Valid
+from validate import Valid, ValidWorkersFile, ValidTasksFile
 import argparse
 import errno
 import os
@@ -23,6 +23,8 @@ def parse_args():
 
 
 def main():
+    # df = pd.read_csv(
+    #     r"C:\Users\Yael Hadad\Desktop\She codes\Final project\UnitTesting\WorkerInfo\before_assign_gold.csv")
     args = parse_args()
     if not os.path.isfile(args.workers):
         print(FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), args.config))
@@ -33,7 +35,8 @@ def main():
     workers_table = pd.read_csv(args.workers)
     tasks_table = pd.read_csv(args.tasks)
     # TBD - Finish the validation
-    Valid(workers_table).valid_values()
+    ValidWorkersFile(workers_table).valid_values()
+    ValidTasksFile(tasks_table).valid_values()
     # from the tasks file, generate all_tasks and set priority
     tasks = GenerateTask(tasks_table)
     # From the configure file generate the "main task foo worker" table
@@ -44,7 +47,8 @@ def main():
     # unique tasks that are less urgent than the optional task
     budget_for_unique_tasks_table = BudgetUnique(prev.config_file)
     # Processing- the algorithm
-    assign = Assign(budget_for_unique_tasks_table.config_file, tasks.all_tasks, processing_workers.all_workers)
+    assign = Assign(budget_for_unique_tasks_table.config_file, tasks.all_tasks, processing_workers.all_workers,
+                    processing_workers.all_impossible_tasks)
     assign_tasks_for_each_worker = TaskAssigned(assign.config_file, processing_workers.all_workers).generate_tasks()
     # TBD -View availability
 
