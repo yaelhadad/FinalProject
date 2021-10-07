@@ -1,7 +1,5 @@
 import unittest
 import pandas as pd
-import filecmp
-import io
 
 from validate import ValidWorkersFile, ValidTasksFile
 from generate_tasks import GenerateTask
