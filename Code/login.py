@@ -9,7 +9,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import sqlite3
 from flask_socketio import SocketIO
-
+import pandas as pd
+#import main
 import email_validator
 
 app = Flask(__name__)
@@ -90,7 +91,32 @@ def ExcelUpload():
             cur.execute("insert into data(exceldata)values(?)", (uploadExcel.filename,))
             con.commit()
             flash("Excel Sheet Upload Successfully", "success")
+            con = sqlite3.connect("MyData3.db")
+            con.row_factory = sqlite3.Row
+            cur = con.cursor()
+            cur.execute("select * from data")
+            data = cur.fetchall()
+            con.close()
+            return render_template("ExcelUpload.html", data=data)
+
     return render_template("ExcelUpload.html")
+
+
+
+@app.route('/view_excel/<string:id>')
+def view_excel(id):
+    con = sqlite3.connect("MyData3.db")
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute("select * from data where pid=?",(id))
+    data = cur.fetchall()
+    print(data)
+    for val in data:
+        path = os.path.join("static/Excel/",val[1])
+        print(val[1])
+        data=pd.read_csv(path)
+    con.close()
+    return render_template("view_excel.html",data=data.to_html(index=False,classes="table table-bordered").replace('<th>','<th style="text-align:center">'))
 
 
 @app.route('/logout')
@@ -98,7 +124,19 @@ def ExcelUpload():
 def logout():
     logout_user()
     return redirect(url_for('index'))
-
+@app.route('/delete_record/<string:id>')
+def delete_record(id):
+    try:
+        con=sqlite3.connect("MyData3.db")
+        cur=con.cursor()
+        cur.execute("delete from data where pid=?",[id])
+        con.commit()
+        flash("Record Deleted Successfully","success")
+    except:
+        flash("Record Deleted Failed", "danger")
+    finally:
+        return redirect(url_for("ExcelUpload"))
+        con.close()
 if __name__ == '__main__':
-    app.run(debug=False, threaded=True)
-    #socketio.run(app, port=5000)
+    app.run(debug=False)
+
