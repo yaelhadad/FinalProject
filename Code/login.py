@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_bootstrap import Bootstrap
 from wtforms import StringField,PasswordField, BooleanField
 from wtforms.validators import InputRequired, Email, Length
@@ -7,17 +7,24 @@ from flask_sqlalchemy  import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+import sqlite3
+from flask_socketio import SocketIO
+
 import email_validator
 
 app = Flask(__name__)
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join('C:/Users/Yael Hadad/ycharmProjects/inalProject/login_adv/', 'database.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'Thisissupposedtobesecret!'
+app.config['UPLOAD_FOLDER'] = r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\static\Excel"
+app.secret_key="123"
+
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 Bootstrap(app)
+socketio = SocketIO(app)
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -50,7 +57,7 @@ def login():
     if user:
         if check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('ExcelUpload'))
     return render_template('login.html', form=form)
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -65,10 +72,26 @@ def signup():
 
     return render_template('signup.html', form=form)
 
-@app.route('/dashboard')
+
+con=sqlite3.connect('MyData3.db')
+con.execute("create table if not exists data(pid integer primary key,exceldata TEXT)")
+con.close()
+
+@app.route('/ExcelUpload',methods=['GET','POST'])
 @login_required
-def dashboard():
-    return render_template('dashboard.html', name=current_user.username)
+def ExcelUpload():
+    if request.method == 'POST':
+        uploadExcel = request.files['uploadExcel']
+        if uploadExcel.filename != '':
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], uploadExcel.filename)
+            uploadExcel.save(filepath)
+            con = sqlite3.connect("MyData3.db")
+            cur = con.cursor()
+            cur.execute("insert into data(exceldata)values(?)", (uploadExcel.filename,))
+            con.commit()
+            flash("Excel Sheet Upload Successfully", "success")
+    return render_template("ExcelUpload.html")
+
 
 @app.route('/logout')
 @login_required
@@ -77,4 +100,5 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, threaded=True)
+    #socketio.run(app, port=5000)
