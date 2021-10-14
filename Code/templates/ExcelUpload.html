@@ -22,12 +22,19 @@
             <form action="/ExcelUpload" method="POST" enctype="multipart/form-data">
                 <h3 class="page-header text-primary">Input Tables</h3>
                  <div class="form-group">
-                    <label>Upload Tasks & Workers File</label>
-                    <input type="file" class="form-control" name="uploadExcel">
+                    <label>Upload Tasks File</label>
+                    <input type="file" class="form-control" name="upload_tasks" value ="upload_tasks"  >
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Upload Excel File" class="btn btn-primary btn-block">
+                    <input type="submit" value="Upload tasks File" class="btn btn-primary btn-block">
                 </div>
+                <div class="form-group">
+                    <label>Upload Workers File</label>
+                    <input type="file" class="form-control" name="upload_workers" value ="upload_workers"  >
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Upload tasks File" class="btn btn-primary btn-block">
+               </div>
             </form>
          </div>
 
