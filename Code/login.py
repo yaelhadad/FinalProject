@@ -124,22 +124,18 @@ def logout():
 @login_required
 def ExcelUpload():
     if request.method == 'POST':
-        tasks_csv = request.files['upload_tasks']
-        workers_csv = request.files['upload_workers']
-        tasks_csv = TextIOWrapper(tasks_csv, encoding='utf-8')
-        workers_csv = TextIOWrapper(workers_csv, encoding='utf-8')
-        csv_reader_tasks = csv.reader(tasks_csv, delimiter=',')
-        csv_reader_workers = csv.reader(workers_csv, delimiter=',')
-        #if request.form.get('upload_tasks'):
-        if db.session.query(Tasks).count() < 1:
+        if request.files.get('upload_tasks'):
+            tasks_csv = request.files['upload_tasks']
+            tasks_csv = TextIOWrapper(tasks_csv, encoding='utf-8')
+            csv_reader_tasks = csv.reader(tasks_csv, delimiter=',')
+            if db.session.query(Tasks).count() < 1:
                 for row in csv_reader_tasks:
                     task = Tasks(ID_Task=row[0],Status =row[1], Description =row[2], Subject=row[3],Assignee=row[4],Queue=row[5],
                              Allotted_time = row[6], Review_Time=row[7])
                     db.session.add(task)
                     db.session.commit()
-  #              return redirect(url_for('ExcelUpload'))
 
-        else:
+            else:
                 db.session.query(Tasks).delete()
                 db.session.commit()
                 for row in csv_reader_tasks:
@@ -147,16 +143,20 @@ def ExcelUpload():
                                  Allotted_time = row[6], Review_Time=row[7])
                     db.session.add(task)
                     db.session.commit()
-           #     return redirect(url_for('ExcelUpload'))
-        #if request.form.get('upload_workers'):
-        if db.session.query(Workers).count() < 1:
+
+
+        elif request.files.get('upload_workers'):
+            workers_csv = request.files['upload_workers']
+            workers_csv = TextIOWrapper(workers_csv, encoding='utf-8')
+            csv_reader_workers = csv.reader(workers_csv, delimiter=',')
+            if db.session.query(Workers).count() < 1:
                 for row in csv_reader_workers:
                     worker = Workers(Name=row[0],Role =row[1], Total_hours =row[2], Total_hours_at_begin=row[3], Expertise =row[4])
                     db.session.add(worker)
                     db.session.commit()
              #   return redirect(url_for('ExcelUpload'))
 
-        else:
+            else:
                 db.session.query(Workers).delete()
                 db.session.commit()
                 for row in csv_reader_workers:
