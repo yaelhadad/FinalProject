@@ -130,8 +130,8 @@ def ExcelUpload():
         data = cur.fetchall()
         con.close()
         return render_template("ExcelUpload.html", data=data)
+    return redirect(url_for('ExcelUpload'))
 
-    return render_template("ExcelUpload.html")
 
 
 @app.route('/view_excel/<string:id>')
