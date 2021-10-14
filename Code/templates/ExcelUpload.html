@@ -1,0 +1,71 @@
+<html>
+    <head>
+        <title>Upload Excel</title>
+        <link rel="stylesheet" href="{{url_for('static',filename='css/bootstrap.min.css')}}">
+        <link rel="stylesheet" href="{{url_for('static',filename='myfont/css/all.min.css')}}">
+		        <script src="{{url_for('static',filename='js/jquery.min.js')}}"></script>
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+                </button>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+                    </ul>
+                     </div>
+                </div>
+            </div>
+        </nav>
+        <div class="col-md-offset-3 col-md-5" style="margin-top:50px">
+            <form action="/ExcelUpload" method="POST" enctype="multipart/form-data">
+                <h3 class="page-header text-primary">Input Tables</h3>
+                 <div class="form-group">
+                    <label>Upload Tasks & Workers File</label>
+                    <input type="file" class="form-control" name="uploadExcel">
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Upload Excel File" class="btn btn-primary btn-block">
+                </div>
+            </form>
+         </div>
+
+            <div class="row">
+            <div class="col-md-offset-3 col-md-5">
+                <h3 class="page-header text-primary "><span class="fa fa-image">  View Excel File</span></h3>
+                 <table class="table table-bordered">
+                      <thead>
+                            <tr>
+                            <th>Serial_number</th>
+                            <th>Excel</th>
+                            <th>Delete</th>
+                        </tr>
+                        </thead>
+                     {% for res in data %}
+                     {% set i=loop.index %}
+                        <tbody>
+                            <tr>
+                                <td style="text-align:center">{{i}}</td>
+                                <td><a href="{{url_for('view_excel',id=res['pid'])}}" class="btn btn-primary btn-block">{{res['exceldata']}}</a></td>
+                                <td><a href="{{url_for('delete_record',id=res['pid'])}}" class="btn btn-danger btn-block">Delete</a></td>
+                         </tr>
+                        </tbody>
+                {% endfor %}
+                      </table>
+            </div>
+        </div>
+
+        <form action="/assign" method="POST">
+            <div class="text-center">
+            <button type="submit">Assign</button>
+            </div>
+        </form>
+
+    </body>
+</html>
+<script>
+    $(document).ready(function(){
+        $(".alert").hide(4000);
+    });
+</script>
