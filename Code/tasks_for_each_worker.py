@@ -13,7 +13,7 @@ class TaskAssigned:
             print(worker.name)
             try:
                 df = dfs[worker.name]
-                df.to_csv(r"C:\Users\Yael Hadad\Desktop\She codes\Final project\Tests\results\%s.csv"
+                df.to_csv(r"C:\Users\User\PycharmProjects\FinalProject\Code\\results\%s.csv"
                           % worker.name)
             except:
                 print(f'{worker.name} did not get tasks')

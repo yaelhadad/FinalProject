@@ -6,12 +6,13 @@ sys.tracebacklimit = 0
 
 
 class Valid:
+    EMPTY_ERROR_MESSAGE = "Input table is empty"
     def __init__(self, df):
         self.df = df
 
     def is_empty(self):
         if self.df.empty:
-            raise ValueError("Input table is empty")
+            raise ValueError(self.EMPTY_ERROR_MESSAGE)
 
 
 class ValidWorkersFile(Valid):
@@ -35,11 +36,7 @@ class ValidTasksFile(Valid):
         self.is_empty()
 
 
-class ValidPosTasks(Valid):
-    def is_empty(self):
-        if self.df.empty:
-            raise ValueError("All the tasks are impossible for the workers")
-        return super().is_empty()
+class ValidPosTasks(ValidTasksFile):
+    EMPTY_ERROR_MESSAGE = "All the tasks are impossible for the workers"
 
-    def valid_values(self):
-        self.is_empty()
+
