@@ -1,4 +1,5 @@
 import pandas as pd
+from login import db,app
 from generate_tasks import GenerateTask
 from processing_workers_info import WorkerInfo
 from prev_sprint import PreviousSprint
@@ -9,6 +10,7 @@ from validate import Valid, ValidWorkersFile, ValidTasksFile
 import argparse
 import errno
 import os
+import sqlalchemy
 
 
 def parse_args():
@@ -32,8 +34,14 @@ def main():
     if not os.path.isfile(args.tasks):
         print(FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), args.tasks))
         return
-    workers_table = pd.read_csv(args.workers)
-    tasks_table = pd.read_csv(args.tasks)
+    engine =sqlalchemy.create_engine('sqlite:///Users_Info.db')
+    workers_table = pd.read_sql('SELECT * FROM workers',engine)
+    #workers_table = pd.read_sql('SELECT TOP 1 * FROM (SELECT TOP 2 *  FROM workers   ORDER BY ID) z',engine)
+
+    print (workers_table )
+    #workers_table = pd.read_csv(args.workers)
+    tasks_table = pd.read_sql('SELECT * FROM tasks',engine)
+    print(tasks_table)
     # TBD - Finish the validation
     ValidWorkersFile(workers_table).valid_values()
     ValidTasksFile(tasks_table).valid_values()
