@@ -33,33 +33,35 @@
                     <input type="file" class="form-control" name="upload_workers" value ="upload_workers"  >
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Upload tasks File" class="btn btn-primary btn-block">
+                    <input type="submit" value="Upload workers File" class="btn btn-primary btn-block">
                </div>
             </form>
          </div>
 
             <div class="row">
             <div class="col-md-offset-3 col-md-5">
-                <h3 class="page-header text-primary "><span class="fa fa-image">  View Excel File</span></h3>
-                 <table class="table table-bordered">
-                      <thead>
+                <h3 class="page-header text-primary "><span class="fa fa-image">  Click here to watch your tasks and workers</span></h3>
+                 <table id="data" class="table table-striped">
+                        <thead>
                             <tr>
-                            <th>Serial_number</th>
-                            <th>Excel</th>
-                            <th>Delete</th>
+                            <th>Category</th>
+                            <th>File</th>
                         </tr>
                         </thead>
-                     {% for res in data %}
-                     {% set i=loop.index %}
-                        <tbody>
-                            <tr>
-                                <td style="text-align:center">{{i}}</td>
-                                <td><a href="{{url_for('view_excel',id=res['pid'])}}" class="btn btn-primary btn-block">{{res['exceldata']}}</a></td>
-                                <td><a href="{{url_for('delete_record',id=res['pid'])}}" class="btn btn-danger btn-block">Delete</a></td>
-                         </tr>
-                        </tbody>
-                {% endfor %}
-                      </table>
+                      <tbody>
+                        <tr>
+                            <td>Tasks</td>
+                            <td><a href="{{url_for('view_tasks')}}" class="btn btn-primary btn-block"></a></td>
+
+
+                        </tr>
+                       <tr>
+                            <td>Workers</td>
+                            <td><a href="{{url_for('view_workers')}}" class="btn btn-primary btn-block"></a></td>
+
+                        </tr>
+                    </tbody>
+                 </table>
             </div>
         </div>
 

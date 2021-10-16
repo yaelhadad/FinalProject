@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+import sqlalchemy
 import sqlite3
 import pandas as pd
 from io import TextIOWrapper
@@ -164,38 +165,20 @@ def ExcelUpload():
 
 
 
-# @app.route('/view_excel/<string:id>')
-# def view_excel(id):
-#     con = sqlite3.connect("Input_Files.db")
-#     con.row_factory = sqlite3.Row
-#     cur = con.cursor()
-#     cur.execute("select * from data where pid=?", (id))
-#     data = cur.fetchall()
-#     print(data)
-#     for val in data:
-#         path = os.path.join("static/Excel/", val[1])
-#         print(val[1])
-#         data = pd.read_csv(path)
-#     con.close()
-#     return render_template("view_excel.html",
-#                            data=data.to_html(index=False, classes="table table-bordered").replace('<th>',
-#                                                                                                   '<th style="text-align:center">'))
-#
-#
-#
-# @app.route('/delete_record/<string:id>')
-# def delete_record(id):
-#     try:
-#         con = sqlite3.connect("Input_Files.db")
-#         cur = con.cursor()
-#         cur.execute("delete from data where pid=?", [id])
-#         con.commit()
-#         flash("Record Deleted Successfully", "success")
-#         return redirect(url_for("ExcelUpload"))
-#         con.close()
-#     except:
-#         flash("Record Deleted Failed", "danger")
+@app.route('/view_tasks')
+def view_tasks():
+    engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
+    df = pd.read_sql('select * from tasks',engine)
 
+    return render_template("view.html",
+                           data=df.to_html(index=False, classes="table table-striped"))
+@app.route('/view_workers')
+def view_workers():
+    engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
+    df = pd.read_sql('select * from workers',engine)
+
+    return render_template("view.html",
+                           data=df.to_html(index=False, classes="table table-striped"))
 
 @app.route('/assign', methods=['GET', 'POST'])
 def assign():
