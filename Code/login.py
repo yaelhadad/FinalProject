@@ -44,16 +44,16 @@ class Tasks(db.Model):
     Description = db.Column(db.String)
     Subject = db.Column(db.String)
     Assignee = db.Column(db.String)
-    Queue = db.Column(db.String)
-    Allotted_time = db.Column(db.String)
-    Review_Time = db.Column(db.String)
+    Queue = db.Column(db.Float)
+    Allotted_time = db.Column(db.Float)
+    Review_Time = db.Column(db.Float)
 
 class Workers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     Name = db.Column(db.String)
     Role = db.Column(db.String)
-    Total_hours = db.Column(db.String)
-    Total_hours_at_begin = db.Column(db.String)
+    Total_hours = db.Column(db.Float)
+    Total_hours_at_begin = db.Column(db.Float)
     Expertise = db.Column(db.String)
 
 

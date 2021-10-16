@@ -60,7 +60,7 @@ class GenerateTask:
                                                           Constants.FIRST, Constants.FIRST_ONE,Constants.PREV_INDEX)
         print (last_task_group1)
         print("self.ALL_TASKS_RANGE_A", self.ALL_TASKS_RANGE_A)
-        print (self.all_tasks)
+        print ("aaa",self.all_tasks)
         # Set the tasks with priority B
         count = Constants.FIRST_ONE
         last_task_group2 = self.set_all_tasks_by_priority(self.ALL_TASKS_RANGE_A, self.ALL_TASKS_RANGE_B,

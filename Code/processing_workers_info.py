@@ -63,13 +63,17 @@ class WorkerInfo:
         self.df_tasks_db = create_db_possible_tasks()
         i = 0
         possible_workers =[]
+
         for task in self.all_tasks.values():
+            print ("cc" ,task)
             subject = task.subject
             possible_workers = self.who_can_do_it(task)
+            print ("bb",task)
             if len(possible_workers) == Constants.ONE:
                 update_initial_information_db_table(self.df_tasks_db, possible_workers[0].name, subject, task, Constants.UNIQUE,
                                                     i)
                 i += 1
+                print ("aaa", task)
             if len(possible_workers) > Constants.ONE:
                 for pos_worker in possible_workers:
                     update_initial_information_db_table(self.df_tasks_db, pos_worker.name, subject, task, Constants.NOT_UNIQUE, i)
