@@ -199,17 +199,8 @@ def ExcelUpload():
 
 @app.route('/assign', methods=['GET', 'POST'])
 def assign():
-    arr = []
-    for root, dirs, files in os.walk(os.path.abspath("./static/Excel")):
-        for file in files:
-            arr.append(os.path.join(root, file))
-    print(arr[0], arr[1])
-    tasks = arr[1].replace(r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project", '.')
-    workers = arr[0].replace(r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project", '.')
-    print(tasks, workers)
-
     try:
-        os.system("python main.py -tasks %s -workers %s" % (tasks, workers))
+        os.system("python main.py")
     except Exception:
         print("Exception in user code:")
         traceback.print_exc(file=sys.stdout)
