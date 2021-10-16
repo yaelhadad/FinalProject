@@ -26,10 +26,7 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 Bootstrap(app)
 
-#
-# con = sqlite3.connect('Input_Files.db')
-# con.execute("create table if not exists data(pid integer primary key,exceldata TEXT)")
-# con.close()
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -68,14 +65,6 @@ class RegisterForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=10)])
-
-# def connect_input_file():
-#     con = sqlite3.connect("Input_Files.db")
-#     con.row_factory = sqlite3.Row
-#     cur = con.cursor()
-#     cur.execute("select * from data")
-#     data = cur.fetchall()
-#     con.close()
 
 
 @login_manager.user_loader

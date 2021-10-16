@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+import pandas as pd
 from constants import Constants
 
 sys.tracebacklimit = 0
@@ -21,12 +22,11 @@ class ValidWorkersFile(Valid):
         # validate inputs
         if not self.df[Constants.NAME].isin(Constants.ALL_WORKERS_IN_TEAM).all():
             raise ValueError("Worker is not defined in the team")
-        if self.df[Constants.TOTAL].dtype not in (np.int64, np.float64):
+        if self.df[Constants.TOTAL].str.isdigit().all():
             raise ValueError("Total hours are invalid")
-        if self.df[Constants.TOTAL_START].dtype not in (np.int64, np.float64):
-            raise ValueError("Total hours at the first week are invalid")
-        # except AssertionError:
-        #     print("nnn")
+        if self.df[Constants.TOTAL_START].str.isdigit().all():
+            raise ValueError("Total hours are invalid")
+
 
         # if float(row.loc[TOTAL_HOURS]) < float(row.loc[TOTAL_HOURS_START]):
 
