@@ -42,17 +42,17 @@ class Tasks(db.Model):
     Description = db.Column(db.String)
     Subject = db.Column(db.String)
     Assignee = db.Column(db.String)
-    Queue = db.Column(db.Float)
-    Allotted_time = db.Column(db.Float)
-    Review_Time = db.Column(db.Float)
+    Queue = db.Column(db.String)
+    Allotted_time = db.Column(db.String)
+    Review_Time = db.Column(db.String)
 
 
 class Workers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     Name = db.Column(db.String)
     Role = db.Column(db.String)
-    Total_hours = db.Column(db.Float)
-    Total_hours_at_begin = db.Column(db.Float)
+    Total_hours = db.Column(db.String)
+    Total_hours_at_begin = db.Column(db.String)
     Expertise = db.Column(db.String)
 
 
@@ -200,19 +200,35 @@ def view_tasks_for_worker(Name):
 def assign():
     try:
         os.system("python main.py")
+        #return redirect('tasks_assigned')
     except Exception:
         print("Exception in user code:")
         traceback.print_exc(file=sys.stdout)
-    return render_template('tasks_assigned.html')
-    #return redirect(url_for('tasks_assigned'))
+    #return redirect('tasks_assigned')
+    #return render_template('tasks_assigned.html')
+    return redirect(url_for('tasks_assigned'))
 
-@app.route('/tasks_assigned', methods=['GET'])
+@app.route('/tasks_assigned', methods=['GET', 'POST'])
 def tasks_assigned():
-     engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
-     df = pd.read_sql('select * from assigned5',engine)
-     data = df.loc['Name']
-     return render_template('tasks_assigned.html', data = data)
-     #,tables = [names.to_html(classes='table table-striped')])
+    try:
+        socks = db.session.query(Workers).all()
+        print("socks")
+        print (socks)
+    except Exception:
+        print("Exception in user code:")
+        traceback.print_exc(file=sys.stdout)
+    #return redirect('tasks_assigned')
+    return render_template('tasks_assigned.html', data = socks)
+    # except Exception as e:
+    #     # e holds description of the error
+    #     error_text = "<p>The error:<br>" + str(e) + "</p>"
+    #     hed = '<h1>Something is broken.</h1>'
+    #     return hed + error_text
+     # engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
+     # df = pd.read_sql('select * from assigned6',engine)
+     # data = df.loc['Name']
+     # return render_template('tasks_assigned.html', data = data)
+     # #,tables = [names.to_html(classes='table table-striped')])
 
 @app.route('/exit_view', methods=['GET', 'POST'])
 def exit_view():

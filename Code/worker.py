@@ -44,10 +44,10 @@ class Worker:
         print (type(self.availability_start_sprint))
         a =5
         if task.priority == 'A':
-            optional_avalialibilty_A = float(self.availability_start_sprint) - task.allotted_time
+            optional_avalialibilty_A = float(self.availability_start_sprint) - (task.allotted_time)
             if optional_avalialibilty_A <= 0:
                 return False
-        optional_avalialibilty = float(self.availability) - task.allotted_time
+        optional_avalialibilty = float(self.availability) - (task.allotted_time)
         if optional_avalialibilty <= 0:
             return False
         return True

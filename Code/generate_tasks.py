@@ -20,7 +20,7 @@ class GenerateTask:
         identify = self.sort_queue.loc[row, Constants.ID]
         subject = self.sort_queue.loc[row, Constants.SUBJECT]
         description = self.sort_queue.loc[row, Constants.DESCRIPTION]
-        allotted_time = self.sort_queue.loc[row, Constants.ESTIMATED_TIME] + self.sort_queue.loc[row, Constants.Review_TIME]
+        allotted_time = float(self.sort_queue.loc[row, Constants.ESTIMATED_TIME]) + float(self.sort_queue.loc[row, Constants.Review_TIME])
         assignee = self.sort_queue.loc[row, Constants.ASSIGNEE]
         status = self.sort_queue.loc[row, Constants.STATUS]
         general_location = row
