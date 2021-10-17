@@ -8,11 +8,11 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import sqlalchemy
-import sqlite3
 import pandas as pd
 from io import TextIOWrapper
 import sys, traceback
 import csv
+
 import email_validator
 
 app = Flask(__name__)
@@ -46,6 +46,7 @@ class Tasks(db.Model):
     Allotted_time = db.Column(db.Float)
     Review_Time = db.Column(db.Float)
 
+
 class Workers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     Name = db.Column(db.String)
@@ -54,6 +55,17 @@ class Workers(db.Model):
     Total_hours_at_begin = db.Column(db.Float)
     Expertise = db.Column(db.String)
 
+
+class Assigned(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String)
+    Expertise = db.Column(db.String)
+    Description = db.Column(db.String)
+    Allotted_time = db.Column(db.String)
+    Is_the_task_Unique = db.Column(db.String)
+    Total_time_for_less_important_unique_tasks = db.Column(db.String)
+    Sprint = db.Column(db.String)
+    Assined_from_last_sprint = db.Column(db.String)
 
 
 class LoginForm(FlaskForm):
@@ -169,16 +181,20 @@ def ExcelUpload():
 def view_tasks():
     engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
     df = pd.read_sql('select * from tasks',engine)
-
     return render_template("view.html",
                            data=df.to_html(index=False, classes="table table-striped"))
 @app.route('/view_workers')
 def view_workers():
     engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
     df = pd.read_sql('select * from workers',engine)
-
     return render_template("view.html",
                            data=df.to_html(index=False, classes="table table-striped"))
+
+@app.route('/view_tasks_for_worker/<string:Name>')
+def view_tasks_for_worker(Name):
+    engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
+    df = pd.read_sql('select When Name= Name from workers',engine)
+    return render_template("view.html",data=df.to_html(index=False, classes="table table-striped"))
 
 @app.route('/assign', methods=['GET', 'POST'])
 def assign():
@@ -187,9 +203,16 @@ def assign():
     except Exception:
         print("Exception in user code:")
         traceback.print_exc(file=sys.stdout)
+    return render_template('tasks_assigned.html')
+    #return redirect(url_for('tasks_assigned'))
 
-    return redirect(url_for('index'))
-
+@app.route('/tasks_assigned', methods=['GET'])
+def tasks_assigned():
+     engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
+     df = pd.read_sql('select * from assigned5',engine)
+     data = df.loc['Name']
+     return render_template('tasks_assigned.html', data = data)
+     #,tables = [names.to_html(classes='table table-striped')])
 
 @app.route('/exit_view', methods=['GET', 'POST'])
 def exit_view():

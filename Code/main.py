@@ -40,6 +40,7 @@ def main():
     assign = Assign(budget_for_unique_tasks_table.config_file, tasks.all_tasks, processing_workers.all_workers,
                     processing_workers.all_impossible_tasks)
     assign_tasks_for_each_worker = TaskAssigned(assign.config_file, processing_workers.all_workers).generate_tasks()
+    workers_names = processing_workers.all_workers.values()
     print(processing_workers.all_impossible_tasks)
     # TBD -View availability
 
