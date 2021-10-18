@@ -7,6 +7,7 @@ class GenerateTask:
 
     def __init__(self, tasks_file):
         self.tasks_file = tasks_file
+        self.number_of_tasks = self.tasks_file.count
         self.sort_queue_initial = self.tasks_file.sort_values(by=[Constants.PRIORITY])
         self.sort_queue = self.sort_queue_initial.reset_index()
         self.LEN_ALL_TASKS = self.sort_queue.shape[Constants.FIRST]

@@ -9,6 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import sqlalchemy
 from tasks_for_each_worker import Assigned
+from generate_tasks import GenerateTask
 import pandas as pd
 from io import TextIOWrapper
 import sys, traceback
@@ -55,18 +56,6 @@ class Workers(db.Model):
     Total_hours = db.Column(db.String)
     Total_hours_at_begin = db.Column(db.String)
     Expertise = db.Column(db.String)
-
-
-# class Assigned(db.Model):
-#     id = db.Column(db.Integer)
-#     Name = db.Column(db.String)
-#     Expertise = db.Column(db.String)
-#     Description = db.Column(db.String)
-#     Allotted_time = db.Column(db.String)
-#     Is_the_task_Unique = db.Column(db.String)
-#     Total_time_for_less_important_unique_tasks = db.Column(db.String)
-#     Sprint = db.Column(db.String)
-#     Assined_from_last_sprint = db.Column(db.String)
 
 
 class LoginForm(FlaskForm):
@@ -216,7 +205,9 @@ def tasks_assigned():
         socks = db.session.query(Assigned).all()
         print("socks")
         print (socks)
-        return render_template('tasks_assigned.html', data=socks)
+        tasks_number = str(db.session.query(Tasks).count())
+        print (tasks_number)
+        return render_template('tasks_assigned.html', data=socks, tasks_number=tasks_number)
     except Exception:
         print("Exception in user code:")
         traceback.print_exc(file=sys.stdout)

@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-  <table id="data" class="table table-striped">
+    <head>
+        <title>Number of tasks</title>
+        <link rel="stylesheet" href="{{url_for('static',filename='css/bootstrap.min.css')}}">
+        <link rel="stylesheet" href="{{url_for('static',filename='myfont/css/all.min.css')}}">
+		        <script src="{{url_for('static',filename='js/jquery.min.js')}}"></script>
+    </head>
+    <body>
+      <h3 class="page-header text-primary">Number of tasks: {{ tasks_number }}</h3>
+      <table id="data" class="table table-striped">
       <tr>
         <th>Name</th>
         <th>Table</th>
@@ -12,6 +20,6 @@
 <!--                     <td><a href="{{url_for('view_tasks_for_worker', Name = row.name)}}" class="btn btn-primary btn-block"></a></td>-->
                         </tr>
       {% endfor %}
-   </table>
-
+         </table>
+    <body>
 </html>
