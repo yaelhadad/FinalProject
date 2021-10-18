@@ -8,6 +8,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import sqlalchemy
+from tasks_for_each_worker import Assigned
 import pandas as pd
 from io import TextIOWrapper
 import sys, traceback
@@ -56,16 +57,16 @@ class Workers(db.Model):
     Expertise = db.Column(db.String)
 
 
-class Assigned(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    Name = db.Column(db.String)
-    Expertise = db.Column(db.String)
-    Description = db.Column(db.String)
-    Allotted_time = db.Column(db.String)
-    Is_the_task_Unique = db.Column(db.String)
-    Total_time_for_less_important_unique_tasks = db.Column(db.String)
-    Sprint = db.Column(db.String)
-    Assined_from_last_sprint = db.Column(db.String)
+# class Assigned(db.Model):
+#     id = db.Column(db.Integer)
+#     Name = db.Column(db.String)
+#     Expertise = db.Column(db.String)
+#     Description = db.Column(db.String)
+#     Allotted_time = db.Column(db.String)
+#     Is_the_task_Unique = db.Column(db.String)
+#     Total_time_for_less_important_unique_tasks = db.Column(db.String)
+#     Sprint = db.Column(db.String)
+#     Assined_from_last_sprint = db.Column(db.String)
 
 
 class LoginForm(FlaskForm):
@@ -210,15 +211,18 @@ def assign():
 
 @app.route('/tasks_assigned', methods=['GET', 'POST'])
 def tasks_assigned():
+    #db2.create_all()
     try:
-        socks = db.session.query(Workers).all()
+        socks = db.session.query(Assigned).all()
         print("socks")
         print (socks)
+        return render_template('tasks_assigned.html', data=socks)
     except Exception:
         print("Exception in user code:")
         traceback.print_exc(file=sys.stdout)
     #return redirect('tasks_assigned')
-    return render_template('tasks_assigned.html', data = socks)
+    return render_template('tasks_assigned.html')
+    #return render_template('tasks_assigned.html', data=socks)
     # except Exception as e:
     #     # e holds description of the error
     #     error_text = "<p>The error:<br>" + str(e) + "</p>"

@@ -1,7 +1,31 @@
 from constants import Constants
 import sqlalchemy
-from login import db, Assigned
+from sqlalchemy.orm import Session
+from sqlalchemy import Column, Integer, String, MetaData
+from sqlalchemy.orm import declarative_base
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
+
+
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Users_Info.db'
+db = SQLAlchemy(app)
+
+
+class Assigned(db.Model):
+    __tablename__ ='assigned'
+    id = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String)
+    Expertise = db.Column(db.String)
+    ID = db.Column(db.Integer)
+    Description = db.Column(db.String)
+    Allotted_time = db.Column(db.String)
+    Is_the_task_Unique = db.Column(db.String)
+    Total_time_for_less_important_unique_tasks = db.Column(db.String)
+    Sprint = db.Column(db.String)
+    Assigned_from_last_sprint = db.Column(db.String)
 
 class TaskAssigned:
 
@@ -12,14 +36,15 @@ class TaskAssigned:
 
     def generate_tasks(self):
         print(type(self.config_file))
-        # db.session.query(Assigned).delete()
-        # db.session.commit()
-        #sql_Delete_query = """DROP TABLE assigned"""
         dfs = dict(tuple(self.config_file.groupby(Constants.NAME)))
-        engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
-        self.config_file.to_sql('assigned122687', engine)
+
         print(dfs)
-        #self.results_of_assign = dfs
+        print (self.config_file)
+        engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
+        assigned = self.config_file.to_sql('assigned', engine, if_exists='replace')
+
+
+        #self.results_of_assign = dfsselect * from
         for worker in self.workers.values():
             print(worker.name)
             try:
