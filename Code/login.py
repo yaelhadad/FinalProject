@@ -27,14 +27,15 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 Bootstrap(app)
-
-
+all_workers_names = []
+all_workers_get_task_names = {}
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(15), unique=True)
     email = db.Column(db.String(50), unique=True)
     password = db.Column(db.String(80))
+
 
 class Tasks(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -73,9 +74,11 @@ class RegisterForm(FlaskForm):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -83,7 +86,7 @@ def signup():
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
         new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
-        #new_banana = Temp(banana="new")
+        # new_banana = Temp(banana="new")
         db.session.add(new_user)
         # db.session.add(new_banana)
         db.session.commit()
@@ -101,7 +104,6 @@ def login():
             login_user(user, remember=form.remember.data)
             return redirect(url_for('ExcelUpload'))
     return render_template('login.html', form=form)
-
 
 
 @app.route('/logout')
@@ -122,8 +124,9 @@ def ExcelUpload():
             if db.session.query(Tasks).count() < 1:
                 first_row = next(csv_reader_tasks)
                 for row in csv_reader_tasks:
-                    task = Tasks(ID_Task=row[0],Status =row[1], Description =row[2], Subject=row[3],Assignee=row[4],Queue=row[5],
-                             Allotted_time = row[6], Review_Time=row[7])
+                    task = Tasks(ID_Task=row[0], Status=row[1], Description=row[2], Subject=row[3], Assignee=row[4],
+                                 Queue=row[5],
+                                 Allotted_time=row[6], Review_Time=row[7])
                     db.session.add(task)
                     db.session.commit()
 
@@ -132,8 +135,9 @@ def ExcelUpload():
                 db.session.commit()
                 first_row = next(csv_reader_tasks)
                 for row in csv_reader_tasks:
-                    task = Tasks(ID_Task=row[0],Status =row[1], Description =row[2], Subject=row[3],Assignee=row[4],Queue=row[5],
-                                 Allotted_time = row[6], Review_Time=row[7])
+                    task = Tasks(ID_Task=row[0], Status=row[1], Description=row[2], Subject=row[3], Assignee=row[4],
+                                 Queue=row[5],
+                                 Allotted_time=row[6], Review_Time=row[7])
                     db.session.add(task)
                     db.session.commit()
 
@@ -143,21 +147,22 @@ def ExcelUpload():
             workers_csv = TextIOWrapper(workers_csv, encoding='utf-8')
             csv_reader_workers = csv.reader(workers_csv, delimiter=',')
 
-
             if db.session.query(Workers).count() < 1:
                 first_row = next(csv_reader_workers)
                 for row in csv_reader_workers:
-                    worker = Workers(Name=row[0],Role =row[1], Total_hours =row[2], Total_hours_at_begin=row[3], Expertise =row[4])
+                    worker = Workers(Name=row[0], Role=row[1], Total_hours=row[2], Total_hours_at_begin=row[3],
+                                     Expertise=row[4])
                     db.session.add(worker)
                     db.session.commit()
-             #   return redirect(url_for('ExcelUpload'))
+            #   return redirect(url_for('ExcelUpload'))
 
             else:
                 db.session.query(Workers).delete()
                 db.session.commit()
                 first_row = next(csv_reader_workers)
                 for row in csv_reader_workers:
-                    worker = Workers(Name=row[0],Role =row[1], Total_hours =row[2], Total_hours_at_begin=row[3], Expertise =row[4])
+                    worker = Workers(Name=row[0], Role=row[1], Total_hours=row[2], Total_hours_at_begin=row[3],
+                                     Expertise=row[4])
                     db.session.add(worker)
                     db.session.commit()
         return redirect(url_for('ExcelUpload'))
@@ -165,51 +170,45 @@ def ExcelUpload():
     return render_template("ExcelUpload.html")
 
 
-
 @app.route('/view_tasks')
 def view_tasks():
     engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
-    df = pd.read_sql('select * from tasks',engine)
-    return render_template("view.html",
-                           data=df.to_html(index=False, classes="table table-striped"))
-@app.route('/view_workers')
-def view_workers():
-    engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
-    df = pd.read_sql('select * from workers',engine)
+    df = pd.read_sql('select * from tasks', engine)
     return render_template("view.html",
                            data=df.to_html(index=False, classes="table table-striped"))
 
-@app.route('/view_tasks_for_worker/<string:Name>')
-def view_tasks_for_worker(Name):
+
+@app.route('/view_workers')
+def view_workers():
     engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
-    df = pd.read_sql('select When Name= Name from workers',engine)
-    return render_template("view.html",data=df.to_html(index=False, classes="table table-striped"))
+    df = pd.read_sql('select * from workers', engine)
+    return render_template("view.html",
+                           data=df.to_html(index=False, classes="table table-striped"))
+
 
 @app.route('/assign', methods=['GET', 'POST'])
 def assign():
     try:
         os.system("python main.py")
-        #return redirect('tasks_assigned')
+        # return redirect('tasks_assigned')
     except Exception:
         print("Exception in user code:")
         traceback.print_exc(file=sys.stdout)
-    #return redirect('tasks_assigned')
-    #return render_template('tasks_assigned.html')
+    # return redirect('tasks_assigned')
+    # return render_template('tasks_assigned.html')
     return redirect(url_for('tasks_assigned'))
+
 
 @app.route('/tasks_assigned', methods=['GET', 'POST'])
 def tasks_assigned():
     db.create_all()
     try:
-        assigned_tasks = db.session.query(Assigned).all()
-        print("socks")
-        print(assigned_tasks)
-        print(type(assigned_tasks[0]))
-        workers = db.session.query(Workers).all()
-        workers_names = []
-        for worker in workers:
-            workers_names.append(worker.Name)
-        print (workers_names)
+
+
+        all_workers = db.session.query(Workers).all()
+        workers_get_tasks = db.session.query(Assigned).all()
+        for worker in workers_get_tasks:
+            all_workers_get_task_names[worker.Name] = db.session.query(Assigned).filter_by(Name=worker.Name)
         tasks_number = str(db.session.query(Tasks).count())
         if sqlalchemy.inspect(engine).has_table(Impossible.__tablename__):
             impossible_tasks = str(db.session.query(Impossible).count())
@@ -217,7 +216,7 @@ def tasks_assigned():
             impossible_tasks = '0'
         print(tasks_number)
         print(impossible_tasks)
-        return render_template('tasks_assigned.html', data=assigned_tasks, tasks_number=tasks_number,
+        return render_template('tasks_assigned.html', data=all_workers, tasks_number=tasks_number,
                                impossible=impossible_tasks)
     except Exception:
         print("Exception in user code:")
@@ -225,9 +224,34 @@ def tasks_assigned():
     return render_template('tasks_assigned.html')
 
 
+#@app.route('/view_tasks_for_worker/<string:Name>', methods=['GET', 'POST'])
+@app.route('/view_tasks_for_worker/<string:WorkerName>')
+def view_tasks_for_worker(WorkerName):
+    #engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
+    # print(workers_names)
+    # print("workers_names")
+    # print(type(workers_names.values))
+    # print(type(workers_names['Yael Hadad']))
+    # print((workers_names.values()))
+
+    #return Flask.jsonify({'workers': workers_names})
+    workers_tasks ={}
+    for name, value in all_workers_get_task_names.items():
+        df = pd.DataFrame()
+        df = pd.read_sql(value.statement, db.session.bind)
+        print (df)
+        workers_tasks[name] =df
+    return render_template("view.html",data=workers_tasks[WorkerName].to_html(index=False, classes="table table-striped"))
+    #
+    #return redirect(url_for('view_tasks_for_worker'))
+    #return redirect(url_for('view'))
+
+    return render_template("view.html")
+
 @app.route('/exit_view', methods=['GET', 'POST'])
 def exit_view():
     return redirect(url_for("ExcelUpload"))
+
 
 if __name__ == '__main__':
     db.create_all()
