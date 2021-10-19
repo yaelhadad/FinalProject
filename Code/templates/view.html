@@ -7,15 +7,9 @@
 </head>
 <body>
     <div class="col-md-offset-3 col-md-5" style="margin-top:100px">
-        <h3 class="page-header text-primary text-center"><span class="fa fa-image"> Input File </span></h3>
+        <h3 class="page-header text-primary text-center"><span class="fa fa-image"> {{ title }} </span></h3>
         {{data|safe}}
     </div>
-    <form action="/exit_view" method="POST">
-        <div class="container">
-        <div class="center">
-         <button style="position: absolute; left: 40%; right: 30%; bottom: 10%; height:50px;width:50px"> Done </button>
-        </div>
-        </div>
-    </form>
+
 </body>
 </html>

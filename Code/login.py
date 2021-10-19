@@ -8,11 +8,12 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import sqlalchemy
-from tasks_for_each_worker import Assigned, Impossible, engine
+from tasks_for_each_worker import Assigned, Impossible, engine, all_assigned_workers
 import pandas as pd
 from io import TextIOWrapper
 import sys, traceback
 import csv
+from constants import Constants
 
 import email_validator
 
@@ -90,6 +91,7 @@ def signup():
         db.session.add(new_user)
         # db.session.add(new_banana)
         db.session.commit()
+
         return '<h1> New user'
 
     return render_template('signup.html', form=form)
@@ -175,7 +177,8 @@ def view_tasks():
     engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
     df = pd.read_sql('select * from tasks', engine)
     return render_template("view.html",
-                           data=df.to_html(index=False, classes="table table-striped"))
+                           data=df.to_html(index=False, classes="table table-striped"),
+                           title="Tasks table")
 
 
 @app.route('/view_workers')
@@ -183,7 +186,8 @@ def view_workers():
     engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
     df = pd.read_sql('select * from workers', engine)
     return render_template("view.html",
-                           data=df.to_html(index=False, classes="table table-striped"))
+                           data=df.to_html(index=False, classes="table table-striped"),
+                           title="Workers table")
 
 
 @app.route('/assign', methods=['GET', 'POST'])
@@ -203,8 +207,6 @@ def assign():
 def tasks_assigned():
     db.create_all()
     try:
-
-
         all_workers = db.session.query(Workers).all()
         workers_get_tasks = db.session.query(Assigned).all()
         for worker in workers_get_tasks:
@@ -214,8 +216,6 @@ def tasks_assigned():
             impossible_tasks = str(db.session.query(Impossible).count())
         else:
             impossible_tasks = '0'
-        print(tasks_number)
-        print(impossible_tasks)
         return render_template('tasks_assigned.html', data=all_workers, tasks_number=tasks_number,
                                impossible=impossible_tasks)
     except Exception:
@@ -227,26 +227,19 @@ def tasks_assigned():
 #@app.route('/view_tasks_for_worker/<string:Name>', methods=['GET', 'POST'])
 @app.route('/view_tasks_for_worker/<string:WorkerName>')
 def view_tasks_for_worker(WorkerName):
-    #engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
-    # print(workers_names)
-    # print("workers_names")
-    # print(type(workers_names.values))
-    # print(type(workers_names['Yael Hadad']))
-    # print((workers_names.values()))
-
-    #return Flask.jsonify({'workers': workers_names})
     workers_tasks ={}
     for name, value in all_workers_get_task_names.items():
         df = pd.DataFrame()
         df = pd.read_sql(value.statement, db.session.bind)
-        print (df)
-        workers_tasks[name] =df
-    return render_template("view.html",data=workers_tasks[WorkerName].to_html(index=False, classes="table table-striped"))
-    #
-    #return redirect(url_for('view_tasks_for_worker'))
-    #return redirect(url_for('view'))
+        df = df.drop([Constants.IS_UNIQUE, Constants.BUDGET_UNIQUE], axis=1)
+        workers_tasks[name] = df
+    if WorkerName not in all_workers_get_task_names.keys():
+        return 'Worker did not get tasks'
+    else:
+        return render_template("view.html",
+                               data=workers_tasks[WorkerName].to_html(index=False,classes="table table-striped"),
+                               title = "Assigned task for worker")
 
-    return render_template("view.html")
 
 @app.route('/exit_view', methods=['GET', 'POST'])
 def exit_view():
