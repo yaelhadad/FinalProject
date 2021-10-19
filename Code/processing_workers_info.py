@@ -3,21 +3,13 @@ from worker import Worker
 from constants import Constants
 from validate import Valid, ValidPosTasks
 
-def update_initial_information_db_table(db, name, subject, task, is_unique, i):
-    if task.sprint == Constants.PREV:
-        assignee = task.assignee
-    else:
-        assignee = 'None'
-    new_info = [name, subject, task.name, task.description, task.identifier, task.allotted_time, is_unique, 0,
-                task.sprint, task.status, assignee]
-    db.loc[i] = new_info
 
 def create_db_possible_tasks():
     db = pd.DataFrame({Constants.NAME: pd.Series(dtype='str'),
                        Constants.EXPERTISE: pd.Series(dtype='str'),
                        Constants.TASK: pd.Series(dtype='str'),
                        Constants.DESCRIPTION: pd.Series(dtype='str'),
-                       Constants.IDENTIFIER:  pd.Series(dtype='int'),
+                       Constants.IDENTIFIER: pd.Series(dtype='int'),
                        Constants.ALLOTTED_TIME: pd.Series(dtype='float'),
                        Constants.IS_UNIQUE: pd.Series(dtype='bool'),
                        Constants.BUDGET_FOR_UNIQUE_BELLOW: pd.Series(dtype='float'),
@@ -27,13 +19,43 @@ def create_db_possible_tasks():
     return db
 
 
+def update_initial_information_db_table(db, name, subject, task, is_unique, i):
+    if task.sprint == Constants.PREV:
+        assignee = task.assignee
+    else:
+        assignee = 'None'
+    new_info = [name, subject, task.name, task.description, task.identifier, task.allotted_time, is_unique, 0,
+                task.sprint, task.status, assignee]
+    db.loc[i] = new_info
+
+
+def create_db_impossible_tasks():
+    db = pd.DataFrame({Constants.IDENTIFIER: pd.Series(dtype='int'),
+                       Constants.SUBJECT: pd.Series(dtype='str'),
+                       Constants.DESCRIPTION: pd.Series(dtype='str'),
+                       Constants.ALLOTTED_TIME: pd.Series(dtype='float')})
+    return db
+
+
+def update_impossible_tasks(db, id, subject, description, allotted_time, i = -1):
+    new_info = [id, subject, description, allotted_time]
+    print (new_info)
+    print (i)
+    if i!=-1:
+        db.loc[i] = new_info
+    else:
+        print ("kkk")
+        db.loc[len(db)] = new_info
+    print (db)
+
+
 class WorkerInfo:
 
     def __init__(self, config_file, all_tasks):
         self.config_file = config_file
         self.all_tasks = all_tasks
         self.all_workers = {}
-        self.all_impossible_tasks = {}
+        self.all_impossible_tasks = pd.DataFrame()
         self.df_tasks_db = None
         self.run()
 
@@ -62,25 +84,32 @@ class WorkerInfo:
         self.set_all_workers()
         self.df_tasks_db = create_db_possible_tasks()
         i = 0
-        possible_workers =[]
+        possible_workers = []
 
         for task in self.all_tasks.values():
 
             subject = task.subject
             possible_workers = self.who_can_do_it(task)
             if len(possible_workers) == Constants.ONE:
-                update_initial_information_db_table(self.df_tasks_db, possible_workers[0].name, subject, task, Constants.UNIQUE,
+                update_initial_information_db_table(self.df_tasks_db, possible_workers[0].name, subject, task,
+                                                    Constants.UNIQUE,
                                                     i)
                 i += 1
 
             if len(possible_workers) > Constants.ONE:
                 for pos_worker in possible_workers:
-                    update_initial_information_db_table(self.df_tasks_db, pos_worker.name, subject, task, Constants.NOT_UNIQUE, i)
+                    update_initial_information_db_table(self.df_tasks_db, pos_worker.name, subject, task,
+                                                        Constants.NOT_UNIQUE, i)
                     i += 1
+            j = 0
+            print(j)
             if len(possible_workers) == Constants.ZERO:
-                self.all_impossible_tasks[task.name] = task
+                self.all_impossible_tasks = create_db_impossible_tasks()
+                update_impossible_tasks(self.all_impossible_tasks, task.identifier, task.subject, task.description,
+                                        task.allotted_time, j)
+                j += 1
                 print(str(task.identifier) + ' ' + task.name + Constants.IMPOSSIBLE)
-        ValidPosTasks(self.df_tasks_db).is_empty()
-       # self.df_tasks_db.to_csv(r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test8\proc_tasks.csv", index=False)
-        # TBD - Check if the the data frem is empty here. error out.
 
+        #ValidPosTasks(self.df_tasks_db).is_empty()
+    # self.df_tasks_db.to_csv(r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test8\proc_tasks.csv", index=False)
+    # TBD - Check if the the data frem is empty here. error out.

@@ -15,17 +15,17 @@ import sqlalchemy
 
 def main():
 
-    engine =sqlalchemy.create_engine('sqlite:///Users_Info.db')
+    engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
     workers_table = pd.read_sql('SELECT * FROM workers',engine)
-    print (workers_table)
+    print(workers_table)
 
     tasks_table = pd.read_sql('SELECT * FROM tasks',engine)
     print(tasks_table)
 
 
     # TBD - Finish the validation
-    ValidWorkersFile(workers_table).valid_values()
-    ValidTasksFile(tasks_table).valid_values()
+    #ValidWorkersFile(workers_table).valid_values()
+    #ValidTasksFile(tasks_table).valid_values()
     # from the tasks file, generate all_tasks and set priority
     tasks = GenerateTask(tasks_table)
     # From the configure file generate the "main task foo worker" table
@@ -39,7 +39,7 @@ def main():
     # Processing- the algorithm
     assign = Assign(budget_for_unique_tasks_table.config_file, tasks.all_tasks, processing_workers.all_workers,
                     processing_workers.all_impossible_tasks)
-    assign_tasks_for_each_worker = TaskAssigned(assign.config_file, processing_workers.all_workers).generate_tasks()
+    assign_tasks_for_each_worker = TaskAssigned(assign.config_file, assign.all_impossible_tasks).assigned_tasks()
     workers_names = processing_workers.all_workers.values()
     print(processing_workers.all_impossible_tasks)
     # TBD -View availability

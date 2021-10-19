@@ -1,7 +1,7 @@
 class Constants:
 
-    TOTAL_HOURS = 'Total hours'
-    TOTAL_HOURS_START = 'Total hours at begin'
+    TOTAL_HOURS = 'Total_hours'
+    TOTAL_HOURS_START = 'Total_hours_at_begin'
     ALL_WORKERS_IN_TEAM = ['Yael Hadad', 'Chanel Michaeli', 'Elad Motzny', 'Maayan Lavi']
     NAME = 'Name'
     TOTAL = 'Total_hours'
@@ -9,7 +9,7 @@ class Constants:
     TASK = 'Task'
     IS_UNIQUE = 'Is_the_task_Unique'
     ALLOTTED_TIME = "Allotted_time"
-    BUDGET_UNIQUE = 'Total time for less important unique tasks'
+    BUDGET_UNIQUE = 'Total_time_for_less_important_unique_tasks'
     PRIORITY = 'Queue'
     SUBJECT = "Subject"
     DESCRIPTION = 'Description'

@@ -7,7 +7,6 @@ class GenerateTask:
 
     def __init__(self, tasks_file):
         self.tasks_file = tasks_file
-        self.number_of_tasks = self.tasks_file.count
         self.sort_queue_initial = self.tasks_file.sort_values(by=[Constants.PRIORITY])
         self.sort_queue = self.sort_queue_initial.reset_index()
         self.LEN_ALL_TASKS = self.sort_queue.shape[Constants.FIRST]
@@ -39,7 +38,7 @@ class GenerateTask:
         for general_index, row in self.sort_queue.loc[start_range: end_range - prev_idx].iterrows():
             current_task = self.set_task(priority, general_index, priority_index)
             priority_index += 1
-            print("the task", current_task)
+            # print("the task", current_task)
             self.all_tasks[current_task.name] = current_task
         return general_index
 
@@ -60,8 +59,8 @@ class GenerateTask:
         last_task_group1 = self.set_all_tasks_by_priority(Constants.FIRST, self.ALL_TASKS_RANGE_A, Constants.PRIORITY_A,
                                                           Constants.FIRST, Constants.FIRST_ONE,Constants.PREV_INDEX)
         print (last_task_group1)
-        print("self.ALL_TASKS_RANGE_A", self.ALL_TASKS_RANGE_A)
-        print ("aaa",self.all_tasks)
+        # print("self.ALL_TASKS_RANGE_A", self.ALL_TASKS_RANGE_A)
+        # print ("aaa",self.all_tasks)
         # Set the tasks with priority B
         count = Constants.FIRST_ONE
         last_task_group2 = self.set_all_tasks_by_priority(self.ALL_TASKS_RANGE_A, self.ALL_TASKS_RANGE_B,

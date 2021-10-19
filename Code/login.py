@@ -8,8 +8,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import sqlalchemy
-from tasks_for_each_worker import Assigned
-from generate_tasks import GenerateTask
+from tasks_for_each_worker import Assigned, Impossible, engine
 import pandas as pd
 from io import TextIOWrapper
 import sys, traceback
@@ -200,30 +199,31 @@ def assign():
 
 @app.route('/tasks_assigned', methods=['GET', 'POST'])
 def tasks_assigned():
-    #db2.create_all()
+    db.create_all()
     try:
-        socks = db.session.query(Assigned).all()
+        assigned_tasks = db.session.query(Assigned).all()
         print("socks")
-        print (socks)
+        print(assigned_tasks)
+        print(type(assigned_tasks[0]))
+        workers = db.session.query(Workers).all()
+        workers_names = []
+        for worker in workers:
+            workers_names.append(worker.Name)
+        print (workers_names)
         tasks_number = str(db.session.query(Tasks).count())
-        print (tasks_number)
-        return render_template('tasks_assigned.html', data=socks, tasks_number=tasks_number)
+        if sqlalchemy.inspect(engine).has_table(Impossible.__tablename__):
+            impossible_tasks = str(db.session.query(Impossible).count())
+        else:
+            impossible_tasks = '0'
+        print(tasks_number)
+        print(impossible_tasks)
+        return render_template('tasks_assigned.html', data=assigned_tasks, tasks_number=tasks_number,
+                               impossible=impossible_tasks)
     except Exception:
         print("Exception in user code:")
         traceback.print_exc(file=sys.stdout)
-    #return redirect('tasks_assigned')
     return render_template('tasks_assigned.html')
-    #return render_template('tasks_assigned.html', data=socks)
-    # except Exception as e:
-    #     # e holds description of the error
-    #     error_text = "<p>The error:<br>" + str(e) + "</p>"
-    #     hed = '<h1>Something is broken.</h1>'
-    #     return hed + error_text
-     # engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
-     # df = pd.read_sql('select * from assigned6',engine)
-     # data = df.loc['Name']
-     # return render_template('tasks_assigned.html', data = data)
-     # #,tables = [names.to_html(classes='table table-striped')])
+
 
 @app.route('/exit_view', methods=['GET', 'POST'])
 def exit_view():

@@ -26,11 +26,11 @@ class Worker:
         if optional_availability < 0:
             return False
         if task.priority == 'A':
-            optinal_avalialibilty_A = float(self.availability_start_sprint) - float(task.allotted_time)
-            if optinal_avalialibilty_A < 0:
+            optional_availability_A = float(self.availability_start_sprint) - float(task.allotted_time)
+            if optional_availability_A < 0:
                 return False
             A_budget = float(budget)
-            if A_budget > float(optinal_avalialibilty_A):
+            if A_budget > float(optional_availability_A):
                 return False
         budget_general = float(budget)
         if budget_general > float(optional_availability):
@@ -38,17 +38,12 @@ class Worker:
         return True
 
     def enough_time(self, task):
-        print (task.allotted_time)
-        print (type(task.allotted_time))
-        print(self.availability_start_sprint)
-        print (type(self.availability_start_sprint))
-        a =5
         if task.priority == 'A':
-            optional_avalialibilty_A = float(self.availability_start_sprint) - (task.allotted_time)
-            if optional_avalialibilty_A <= 0:
+            optional_availability_A = float(self.availability_start_sprint) - (task.allotted_time)
+            if optional_availability_A <= 0:
                 return False
-        optional_avalialibilty = float(self.availability) - (task.allotted_time)
-        if optional_avalialibilty <= 0:
+        optional_availability = float(self.availability) - (task.allotted_time)
+        if optional_availability <= 0:
             return False
         return True
 
