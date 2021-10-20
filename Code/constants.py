@@ -24,7 +24,7 @@ class Constants:
     FIRST = 0
     FIRST_ONE = 1
     ID = "ID_Task"
-    ID2 = "ID"
+    ID2 = "ID2"
     PRIORITY_A = 'A'
     PRIORITY_B = 'B'
     PRIORITY_C = 'C'

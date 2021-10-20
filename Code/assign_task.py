@@ -48,14 +48,16 @@ class Assign:
         if self.all_impossible_tasks.empty:
               print(self.all_impossible_tasks)
         else:
+
             print(self.all_impossible_tasks)
+
         if df_possible_workers.empty:
             if self.all_impossible_tasks.empty:
                 self.all_impossible_tasks=create_db_impossible_tasks()
             update_impossible_tasks(self.all_impossible_tasks,int(task.identifier),task.subject, task.description,
                                     float(task.allotted_time))
             print(self.config_file)
-            self.config_file = self.config_file[self.config_file.ID != task.identifier]
+            self.config_file = self.config_file[self.config_file.ID2 != task.identifier]
             task.status = Constants.IMPOSSIBLE
             return
         if len(df_possible_workers.index) == Constants.ONLY_ONE and task.status != Constants.ASSIGNED:
@@ -77,7 +79,6 @@ class Assign:
 
         print(task.name)
     def run(self):
-        print("asssign", self.config_file)
         # self.config_file.to_csv(
         #     r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test6\before_assign_gold.csv")
         self.config_file = self.config_file.sort_values(by=[Constants.TASK])
@@ -87,7 +88,6 @@ class Assign:
             if row.loc[Constants.IS_UNIQUE]:
                 assign_task(task, self.all_workers[row.loc[Constants.NAME]])
             # Decide what to do if a task appear in the optional list of multiple workers
-            print(task.identifier)
             if not row.loc[Constants.IS_UNIQUE] and task.status not in (Constants.ASSIGNED, Constants.IMPOSSIBLE):
                 self.decide_who_will_assign(self.all_tasks[row.loc[Constants.TASK]])
 

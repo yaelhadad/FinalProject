@@ -8,12 +8,9 @@ class PreviousSprint:
 
     def __init__(self, config_file):
         self.config_file = config_file
-        self.backup = pd.DataFrame()
         self.run()
 
     def remove_tasks_prev_sprint_from_possible_worker(self, task):
-        self.backup = self.backup.append(self.config_file[(self.config_file[Constants.TASK] == task) &
-                                                          (self.config_file[Constants.IS_UNIQUE] == False)])
         self.config_file = self.config_file.drop(self.config_file[(self.config_file[Constants.TASK] == task) &
                                                                   (self.config_file[Constants.IS_UNIQUE] == False)].index)
 

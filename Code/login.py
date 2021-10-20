@@ -8,7 +8,6 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import sqlalchemy
-from tasks_for_each_worker import Assigned, Impossible, engine, all_assigned_workers
 import pandas as pd
 from io import TextIOWrapper
 import sys, traceback
@@ -31,6 +30,8 @@ Bootstrap(app)
 all_workers_names = []
 all_workers_get_task_names = {}
 
+
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(15), unique=True)
@@ -45,19 +46,41 @@ class Tasks(db.Model):
     Description = db.Column(db.String)
     Subject = db.Column(db.String)
     Assignee = db.Column(db.String)
-    Queue = db.Column(db.String)
-    Allotted_time = db.Column(db.String)
-    Review_Time = db.Column(db.String)
+    Queue = db.Column(db.Float)
+    Allotted_time = db.Column(db.Float)
+    Review_Time = db.Column(db.Float)
 
 
 class Workers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     Name = db.Column(db.String)
     Role = db.Column(db.String)
-    Total_hours = db.Column(db.String)
-    Total_hours_at_begin = db.Column(db.String)
+    Total_hours = db.Column(db.Float)
+    Total_hours_at_begin = db.Column(db.Float)
     Expertise = db.Column(db.String)
 
+
+class Assigned(db.Model):
+    __tablename__ = 'assigned'
+    index = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String)
+    Expertise = db.Column(db.String)
+    ID2 = db.Column(db.Integer)
+    Description = db.Column(db.String)
+    Allotted_time = db.Column(db.Float)
+    Is_the_task_Unique = db.Column(db.String)
+    Total_time_for_less_important_unique_tasks = db.Column(db.Float)
+    Sprint = db.Column(db.String)
+    Assigned_from_last_sprint = db.Column(db.String)
+
+
+class Impossible(db.Model):
+    __tablename__ = 'impossible'
+    index = db.Column(db.Integer, primary_key=True)
+    ID2 = db.Column(db.Integer)
+    Subject = db.Column(db.String)
+    Description = db.Column(db.String)
+    Allotted_time = db.Column(db.Float)
 
 class LoginForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
@@ -69,6 +92,8 @@ class RegisterForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=10)])
+
+
 
 
 @login_manager.user_loader
@@ -87,9 +112,7 @@ def signup():
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
         new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
-        # new_banana = Temp(banana="new")
         db.session.add(new_user)
-        # db.session.add(new_banana)
         db.session.commit()
 
         return '<h1> New user'
@@ -118,6 +141,8 @@ def logout():
 @app.route('/ExcelUpload', methods=['GET', 'POST'])
 @login_required
 def ExcelUpload():
+    # db.session.query(Impossible).delete()
+    # db.session.commit()
     if request.method == 'POST':
         if request.files.get('upload_tasks'):
             tasks_csv = request.files['upload_tasks']
@@ -205,26 +230,29 @@ def assign():
 
 @app.route('/tasks_assigned', methods=['GET', 'POST'])
 def tasks_assigned():
-    db.create_all()
+    #db.create_all()
     try:
+        engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
         all_workers = db.session.query(Workers).all()
         workers_get_tasks = db.session.query(Assigned).all()
         for worker in workers_get_tasks:
             all_workers_get_task_names[worker.Name] = db.session.query(Assigned).filter_by(Name=worker.Name)
         tasks_number = str(db.session.query(Tasks).count())
-        if sqlalchemy.inspect(engine).has_table(Impossible.__tablename__):
+        are_any_impossible = db.session.query(Impossible).first()
+        if are_any_impossible:
             impossible_tasks = str(db.session.query(Impossible).count())
         else:
             impossible_tasks = '0'
+
         return render_template('tasks_assigned.html', data=all_workers, tasks_number=tasks_number,
                                impossible=impossible_tasks)
     except Exception:
         print("Exception in user code:")
         traceback.print_exc(file=sys.stdout)
-    return render_template('tasks_assigned.html')
+    return redirect('ExcelUpload')
 
 
-#@app.route('/view_tasks_for_worker/<string:Name>', methods=['GET', 'POST'])
+
 @app.route('/view_tasks_for_worker/<string:WorkerName>')
 def view_tasks_for_worker(WorkerName):
     workers_tasks ={}

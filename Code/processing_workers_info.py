@@ -9,7 +9,7 @@ def create_db_possible_tasks():
                        Constants.EXPERTISE: pd.Series(dtype='str'),
                        Constants.TASK: pd.Series(dtype='str'),
                        Constants.DESCRIPTION: pd.Series(dtype='str'),
-                       Constants.IDENTIFIER: pd.Series(dtype='int'),
+                       Constants.ID2: pd.Series(dtype='int'),
                        Constants.ALLOTTED_TIME: pd.Series(dtype='float'),
                        Constants.IS_UNIQUE: pd.Series(dtype='bool'),
                        Constants.BUDGET_FOR_UNIQUE_BELLOW: pd.Series(dtype='float'),
@@ -26,11 +26,12 @@ def update_initial_information_db_table(db, name, subject, task, is_unique, i):
         assignee = 'None'
     new_info = [name, subject, task.name, task.description, task.identifier, task.allotted_time, is_unique, 0,
                 task.sprint, task.status, assignee]
+    print (new_info)
     db.loc[i] = new_info
 
 
 def create_db_impossible_tasks():
-    db = pd.DataFrame({Constants.IDENTIFIER: pd.Series(dtype='int'),
+    db = pd.DataFrame({Constants.ID2: pd.Series(dtype='int'),
                        Constants.SUBJECT: pd.Series(dtype='str'),
                        Constants.DESCRIPTION: pd.Series(dtype='str'),
                        Constants.ALLOTTED_TIME: pd.Series(dtype='float')})
@@ -39,14 +40,11 @@ def create_db_impossible_tasks():
 
 def update_impossible_tasks(db, id, subject, description, allotted_time, i = -1):
     new_info = [id, subject, description, allotted_time]
-    print (new_info)
-    print (i)
     if i!=-1:
         db.loc[i] = new_info
     else:
-        print ("kkk")
         db.loc[len(db)] = new_info
-    print (db)
+
 
 
 class WorkerInfo:
@@ -102,14 +100,10 @@ class WorkerInfo:
                                                         Constants.NOT_UNIQUE, i)
                     i += 1
             j = 0
-            print(j)
             if len(possible_workers) == Constants.ZERO:
                 self.all_impossible_tasks = create_db_impossible_tasks()
                 update_impossible_tasks(self.all_impossible_tasks, task.identifier, task.subject, task.description,
                                         task.allotted_time, j)
                 j += 1
-                print(str(task.identifier) + ' ' + task.name + Constants.IMPOSSIBLE)
 
-        #ValidPosTasks(self.df_tasks_db).is_empty()
-    # self.df_tasks_db.to_csv(r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test8\proc_tasks.csv", index=False)
-    # TBD - Check if the the data frem is empty here. error out.
+                print(str(task.identifier) + ' ' + task.name + Constants.IMPOSSIBLE)

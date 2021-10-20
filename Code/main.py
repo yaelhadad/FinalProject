@@ -1,12 +1,11 @@
 import pandas as pd
-from login import db,app
+from login import db, Impossible, Assigned
 import numpy as np
 from generate_tasks import GenerateTask
 from processing_workers_info import WorkerInfo
 from prev_sprint import PreviousSprint
 from budget_unique_tasks import BudgetUnique
 from assign_task import Assign
-from tasks_for_each_worker import TaskAssigned
 from validate import Valid, ValidWorkersFile, ValidTasksFile
 import argparse
 import errno
@@ -28,7 +27,7 @@ def main():
     #ValidTasksFile(tasks_table).valid_values()
     # from the tasks file, generate all_tasks and set priority
     tasks = GenerateTask(tasks_table)
-    # From the configure file generate the "main task foo worker" table
+    # From the configure file generate the "main task for worker" table
     processing_workers = WorkerInfo(workers_table, tasks.all_tasks)
     # Previous sprint update the main task to worker table
     prev = PreviousSprint(processing_workers.df_tasks_db)
@@ -39,8 +38,14 @@ def main():
     # Processing- the algorithm
     assign = Assign(budget_for_unique_tasks_table.config_file, tasks.all_tasks, processing_workers.all_workers,
                     processing_workers.all_impossible_tasks)
-    assign_tasks_for_each_worker = TaskAssigned(assign.config_file, assign.all_impossible_tasks).assigned_tasks()
-    workers_names = processing_workers.all_workers.values()
+    assigned = assign.config_file.to_sql('assigned', engine, if_exists='replace')
+    if not assign.all_impossible_tasks.empty:
+        impossible = assign.all_impossible_tasks.to_sql('impossible', engine, if_exists='replace')
+    else:
+        db.session.query(Impossible).delete()
+        db.session.commit()
+
+
     print(processing_workers.all_impossible_tasks)
     # TBD -View availability
 

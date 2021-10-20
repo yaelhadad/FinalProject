@@ -16,33 +16,34 @@ class Worker:
 
     def update_assigned_task(self, task):
         if task.priority == 'A':
-            self.availability_start_sprint = str(float(self.availability_start_sprint) - float(task.allotted_time))
-        self.availability = str(float(self.availability)- float(task.allotted_time))
-        self.count_current_hours = str(float(self.count_current_hours)+ float(task.allotted_time))
+            self.availability_start_sprint = self.availability_start_sprint - task.allotted_time
+
+        self.availability = self.availability- task.allotted_time
+        self.count_current_hours = self.count_current_hours+ task.allotted_time
         self.current_tasks.append(task.identifier)
 
     def verify_optional_task_before_devide(self, task, budget):
-        optional_availability = float(self.availability) - float(task.allotted_time)
+        optional_availability = self.availability - task.allotted_time
         if optional_availability < 0:
             return False
         if task.priority == 'A':
-            optional_availability_A = float(self.availability_start_sprint) - float(task.allotted_time)
+            optional_availability_A = self.availability_start_sprint - task.allotted_time
             if optional_availability_A < 0:
                 return False
-            A_budget = float(budget)
-            if A_budget > float(optional_availability_A):
+            A_budget = budget
+            if A_budget > optional_availability_A:
                 return False
-        budget_general = float(budget)
-        if budget_general > float(optional_availability):
+        budget_general = budget
+        if budget_general > optional_availability:
             return False
         return True
 
     def enough_time(self, task):
         if task.priority == 'A':
-            optional_availability_A = float(self.availability_start_sprint) - (task.allotted_time)
+            optional_availability_A = self.availability_start_sprint - task.allotted_time
             if optional_availability_A <= 0:
                 return False
-        optional_availability = float(self.availability) - (task.allotted_time)
+        optional_availability = self.availability - task.allotted_time
         if optional_availability <= 0:
             return False
         return True
