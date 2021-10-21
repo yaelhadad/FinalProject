@@ -1,43 +1,138 @@
-{% extends "bootstrap/base.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block title %}
-Demo App
-{% endblock %}
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Task Assigner</title>
 
-{% block styles %}
-{{super()}}
-<link rel="stylesheet" href="{{url_for('.static', filename='starter-template.css')}}">
-{% endblock %}
 
-{% block content %}
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
+  <!-- Vendor CSS Files -->
+  <link href="static/vendor/aos/aos.css" rel="stylesheet">
+  <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="static/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="static/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="static/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="static/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="static/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="static/css/style.css" rel="stylesheet">
+<style>
+.content {
+  max-width: 500px;
+  margin: auto;
+}
+</style>
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top ">
+    <div class="container d-flex align-items-center justify-content-lg-between">
+
+      <!-- Uncomment below if you prefer to use an image logo -->
+      <!-- <a href="index.html" class="logo me-auto me-lg-0"><img src="static/img/logo.png" alt="" class="img-fluid"></a>-->
+
+      <nav id="navbar" class="navbar order-last order-lg-0">
+        <ul>
+          <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+          <li><a class="nav-link scrollto" href="#about">About</a></li>
+          <li><a href="{{ url_for('login') }}">Login</a></li>
+          <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+
+
+    </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="d-flex align-items-center justify-content-center">
+    <div class="container" data-aos="fade-up">
+
+      <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="150">
+        <div class="col-xl-8 col-lg-10">
+          <h1>Automatic Assigning Tasks<span></span></h1>
+           <h1>for team members<span></span></h1>
+          </div>
+      </div>
+
+      <div class="row gy-4 mt-5 justify-content-center" data-aos="zoom-in" data-aos-delay="250">
+        <div class="col-xl-2 col-md-4">
+          <div class="icon-box">
+            <i class="ri-calendar-todo-line"></i>
+            <h3><a href=#hero>Sprint planning</a></h3>
+          </div>
         </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="{{ url_for('login') }}">Login</a></li>
-            <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
+        <div class="col-xl-2 col-md-4">
+          <div class="icon-box">
+            <i class="ri-calendar-todo-line"></i>
+            <h3><a href=#hero>Family chores</a></h3>
+          </div>
+        </div>
+        <div class="col-xl-2 col-md-4">
+          <div class="icon-box">
+            <i class="ri-calendar-todo-line"></i>
+            <h3><a href=#hero>Joint project of students</a></h3>
+          </div>
+        </div>
+    </div>
+    </div>
+   </section><!-- End Portfolio Section -->
+
+    <!-- ======= Counts Section ======= -->
+  <section id="about" class="about">
+
+        <div class="row">
+          <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-left" data-aos-delay="100">
+            <img src="static/img/about.jpg" class="img-fluid" alt="">
+          </div>
+          <div class="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 content" data-aos="fade-right" data-aos-delay="100">
+            <h3>Tasks that should be done by a team must been well planned.</h3>
+
+              When you assigned your tasks you must threat these parameters:
+
+            <ul>
+              <li><i class="ri-check-double-line"></i> The priority of the tasks.</li>
+              <li><i class="ri-check-double-line"></i> The amount of the tasks.</li>
+              <li><i class="ri-check-double-line"></i> The allotted time of the tasks.</li>
+              <li><i class="ri-check-double-line"></i> The availability of the team members.</li>
+              <li><i class="ri-check-double-line"></i> The expertise of the team members.</li>
+            </ul>
+            Assigning tasks manually each period is a complex task since all the parameters above are dynamically changed.
+
+          </div>
+        </div>
+       </div>
       </div>
-    </nav>
+    </section><!-- End About Section -->
 
-    <div class="container">
 
-      <div class="starter-template">
-        <h1>Task Manager</h1>
-        <p class="lead">Download the template files ans set tasks and the details of your workers.
-          <br>  Let us assign the tasks for you!</p>
-      </div>
 
-    </div><!-- /.container -->
-{% endblock %}
+
+
+  <div id="preloader"></div>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="static/vendor/aos/aos.js"></script>
+  <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="static/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="static/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="static/vendor/php-email-form/validate.js"></script>
+  <script src="static/vendor/purecounter/purecounter.js"></script>
+  <script src="static/vendor/swiper/swiper-bundle.min.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="static/js/main.js"></script>
+
+</body>
+
+</html>
