@@ -1,7 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_bootstrap import Bootstrap
-from wtforms import StringField, PasswordField, BooleanField
-from wtforms.validators import InputRequired, Email, Length
+from sqlalchemy import CheckConstraint
+from wtforms import StringField, PasswordField, BooleanField, SelectField
+from wtforms.validators import InputRequired, Email, Length, DataRequired
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -29,6 +30,7 @@ login_manager.login_view = 'login'
 Bootstrap(app)
 all_workers_names = []
 all_workers_get_task_names = {}
+count_tasks_for_each_worker = {}
 
 
 
@@ -36,6 +38,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(15), unique=True)
     email = db.Column(db.String(50), unique=True)
+    role = db.Column(db.String(10))
     password = db.Column(db.String(80))
 
 
@@ -91,7 +94,8 @@ class LoginForm(FlaskForm):
 class RegisterForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=10)])
+    role = SelectField('role', validators=[DataRequired()], choices=[('member', 'manager')])
+    password = PasswordField('password', validators=[InputRequired(), Length(min=4, max=8)])
 
 
 
@@ -106,12 +110,18 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/tutorial', methods=['GET', 'POST'])
+def tutorial():
+    return render_template('tutorial.html')
+
+
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = RegisterForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
-        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password, role=form.role.data)
         db.session.add(new_user)
         db.session.commit()
 
@@ -141,8 +151,7 @@ def logout():
 @app.route('/ExcelUpload', methods=['GET', 'POST'])
 @login_required
 def ExcelUpload():
-    # db.session.query(Impossible).delete()
-    # db.session.commit()
+
     if request.method == 'POST':
         if request.files.get('upload_tasks'):
             tasks_csv = request.files['upload_tasks']
@@ -237,15 +246,19 @@ def tasks_assigned():
         workers_get_tasks = db.session.query(Assigned).all()
         for worker in workers_get_tasks:
             all_workers_get_task_names[worker.Name] = db.session.query(Assigned).filter_by(Name=worker.Name)
-        tasks_number = str(db.session.query(Tasks).count())
+            count_tasks_for_each_worker[worker.Name] = all_workers_get_task_names[worker.Name].count()
+        tasks_number = db.session.query(Tasks).count()
         are_any_impossible = db.session.query(Impossible).first()
         if are_any_impossible:
-            impossible_tasks = str(db.session.query(Impossible).count())
+            impossible_tasks = db.session.query(Impossible).count()
+            assigned_tasks_sum = str(tasks_number - impossible_tasks)
+            msg1 = "%s tasks are impossible" % (impossible_tasks)
+            msg2 = "%s tasks were assigned." % (assigned_tasks_sum)
         else:
-            impossible_tasks = '0'
-
+            msg1 = "All the tasks were assigned successfully!"
+            msg2 = "Good Luck!"
         return render_template('tasks_assigned.html', data=all_workers, tasks_number=tasks_number,
-                               impossible=impossible_tasks)
+                               msg1=msg1, msg2 = msg2, count=count_tasks_for_each_worker)
     except Exception:
         print("Exception in user code:")
         traceback.print_exc(file=sys.stdout)

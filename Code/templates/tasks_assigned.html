@@ -1,22 +1,40 @@
 <!DOCTYPE html>
 <head>
+<style>
+table, th, td {
+border: 1px solid black;
+margin-left: auto;
+margin-right: auto;
+border-collapse: collapse;
+width: 800px;
+height: 70px;
+text-align: center;
+font-size: 15px;
+}
+
+</style>
+
     <title>Number of tasks</title>
     <link rel="stylesheet" href="{{url_for('static',filename='css/bootstrap.min.css')}}">
-    <link rel="stylesheet" href="{{url_for('static',filename='myfont/css/all.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='myfont/css/all.css')}}">
     <script src="{{url_for('static',filename='js/jquery.min.js')}}"></script>
 </head>
 <body>
-<h3 class="page-header text-primary">Number of tasks: {{ tasks_number }}</h3>
-<h3 class="page-header text-primary">Number of impossible tasks: {{ impossible  }}</h3>
-<table id="data" class="table table-striped">
+<h1 class="page-header text-primary" style="text-align:center; color: orange;">Total tasks of the project: {{ tasks_number }}</h1>
+<h3 class="page-header text-primary" style="text-align:center; color: black">{{ msg1  }}</h3>
+<h3 class="page-header text-primary" style="text-align:center ;color:green ">{{ msg2  }} </h3>
+
+<table id="data">
     <tr>
         <th>Name</th>
-        <th>Table</th>
+        <th>Assigned Tasks Table</th>
+        <th>Number of assigned tasks</th>
     </tr>
     {% for row in data %}
     <tr>
         <td>{{ row.Name }}</td>
-        <td><a href="{{url_for('view_tasks_for_worker', WorkerName = row.Name )}}" class="btn btn-primary btn-block">{{ row.Name }}</a></td>
+        <td><a href="{{url_for('view_tasks_for_worker', WorkerName = row.Name )}}" class="btn btn-primary btn-block" style="background-color:orange"> View </a></td>
+        <td>{{ count[row.Name] }}</td>
     </tr>
     {% endfor %}
 </table>
