@@ -30,7 +30,7 @@ login_manager.login_view = 'login'
 Bootstrap(app)
 all_workers_names = []
 all_workers_get_task_names = {}
-count_tasks_for_each_worker = {}
+
 
 
 
@@ -68,19 +68,21 @@ class Assigned(db.Model):
     index = db.Column(db.Integer, primary_key=True)
     Name = db.Column(db.String)
     Expertise = db.Column(db.String)
-    ID2 = db.Column(db.Integer)
+    ID = db.Column(db.Integer)
     Description = db.Column(db.String)
     Allotted_time = db.Column(db.Float)
     Is_the_task_Unique = db.Column(db.String)
     Total_time_for_less_important_unique_tasks = db.Column(db.Float)
-    Sprint = db.Column(db.String)
-    Assigned_from_last_sprint = db.Column(db.String)
+    Already_assigned_by= db.Column(db.String)
+    Status = db.Column(db.String)
+    Is_already_assigned= db.Column(db.String)
+
 
 
 class Impossible(db.Model):
     __tablename__ = 'impossible'
     index = db.Column(db.Integer, primary_key=True)
-    ID2 = db.Column(db.Integer)
+    ID = db.Column(db.Integer)
     Subject = db.Column(db.String)
     Description = db.Column(db.String)
     Allotted_time = db.Column(db.Float)
@@ -241,6 +243,7 @@ def assign():
 def tasks_assigned():
     #db.create_all()
     try:
+        count_tasks_for_each_worker = {}
         engine = sqlalchemy.create_engine('sqlite:///Users_Info.db')
         all_workers = db.session.query(Workers).all()
         workers_get_tasks = db.session.query(Assigned).all()
@@ -272,7 +275,7 @@ def view_tasks_for_worker(WorkerName):
     for name, value in all_workers_get_task_names.items():
         df = pd.DataFrame()
         df = pd.read_sql(value.statement, db.session.bind)
-        df = df.drop([Constants.IS_UNIQUE, Constants.BUDGET_UNIQUE], axis=1)
+        df = df.drop([Constants.IS_UNIQUE, Constants.BUDGET_UNIQUE, Constants.ALREADY_ASSIGNED, Constants.IS_ASSIGNED], axis=1)
         workers_tasks[name] = df
     if WorkerName not in all_workers_get_task_names.keys():
         return 'Worker did not get tasks'

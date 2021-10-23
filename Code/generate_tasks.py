@@ -24,12 +24,12 @@ class GenerateTask:
         assignee = self.sort_queue.loc[row, Constants.ASSIGNEE]
         status = self.sort_queue.loc[row, Constants.STATUS]
         general_location = row
-        if status == Constants.PROGRESSIVE or status == Constants.REVIEW:
-            sprint = Constants.PREV
+        if assignee:
+            already_assigned = True
         else:
-            sprint = Constants.CURRENT
+            already_assigned = False
         return Task(name, identify, subject, description, allotted_time, assignee, priority, status,
-                    general_location, location_in_queue, sprint)
+                    general_location, location_in_queue, already_assigned)
         # locals()[name] = Task(name, identify, subject, description, allotted_time, assignee, priority, status,
         #                       general_location,location_in_queue,sprint)
         # self.all_tasks.append(locals()[name])

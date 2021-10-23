@@ -2,7 +2,6 @@ class Constants:
 
     TOTAL_HOURS = 'Total_hours'
     TOTAL_HOURS_START = 'Total_hours_at_begin'
-    ALL_WORKERS_IN_TEAM = ['Yael Hadad', 'Chanel Michaeli', 'Elad Motzny', 'Maayan Lavi']
     NAME = 'Name'
     TOTAL = 'Total_hours'
     TOTAL_START = 'Total_hours_at_begin'
@@ -24,7 +23,6 @@ class Constants:
     FIRST = 0
     FIRST_ONE = 1
     ID = "ID_Task"
-    ID2 = "ID2"
     PRIORITY_A = 'A'
     PRIORITY_B = 'B'
     PRIORITY_C = 'C'
@@ -34,15 +32,14 @@ class Constants:
     BUDGET_FOR_UNIQUE_BELLOW = 'Total_time_for_less_important_unique_tasks'
     SPRINT = "Sprint"
     IDENTIFIER = "ID"
-    IS_ASSIGNED = "Assigned_from_last_sprint"
+    IS_ASSIGNED = "Is_already_assigned"
     IMPOSSIBLE = "IMPOSSIBLE"
     ONE = 1
     ZERO = 0
     UNIQUE = True
     NOT_UNIQUE = False
-    ASSIGNED_PREV = 'Assigned_from_last_sprint'
+    ALREADY_ASSIGNED = 'Already_assigned_by'
     IS_ASSIGNED_UNIQUE = "Is assigned unique?"
-    PREVIOUS = "Previous"
     UPDATE_UNIQUE = "Should be update as unique?"
     Removed = "Should be removed?"
     ASSIGNED = 'assigned'

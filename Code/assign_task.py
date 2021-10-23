@@ -49,7 +49,7 @@ class Assign:
               print(self.all_impossible_tasks)
         else:
 
-            print(self.all_impossible_tasks)
+            print("AAAA", self.all_impossible_tasks)
 
         if df_possible_workers.empty:
             if self.all_impossible_tasks.empty:
@@ -57,7 +57,8 @@ class Assign:
             update_impossible_tasks(self.all_impossible_tasks,int(task.identifier),task.subject, task.description,
                                     float(task.allotted_time))
             print(self.config_file)
-            self.config_file = self.config_file[self.config_file.ID2 != task.identifier]
+            self.config_file = self.config_file[self.config_file.ID != task.identifier]
+            print ("00")
             task.status = Constants.IMPOSSIBLE
             return
         if len(df_possible_workers.index) == Constants.ONLY_ONE and task.status != Constants.ASSIGNED:
