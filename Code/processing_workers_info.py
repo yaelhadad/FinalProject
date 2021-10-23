@@ -9,29 +9,31 @@ def create_db_possible_tasks():
                        Constants.EXPERTISE: pd.Series(dtype='str'),
                        Constants.TASK: pd.Series(dtype='str'),
                        Constants.DESCRIPTION: pd.Series(dtype='str'),
-                       Constants.ID2: pd.Series(dtype='int'),
+                       Constants.IDENTIFIER: pd.Series(dtype='int'),
                        Constants.ALLOTTED_TIME: pd.Series(dtype='float'),
                        Constants.IS_UNIQUE: pd.Series(dtype='bool'),
                        Constants.BUDGET_FOR_UNIQUE_BELLOW: pd.Series(dtype='float'),
-                       Constants.SPRINT: pd.Series(dtype='str'),
+                       Constants.ALREADY_ASSIGNED: pd.Series(dtype='str'),
                        Constants.STATUS: pd.Series(dtype='str'),
                        Constants.IS_ASSIGNED: pd.Series(dtype='str')})
     return db
 
 
 def update_initial_information_db_table(db, name, subject, task, is_unique, i):
-    if task.sprint == Constants.PREV:
+    if task.assignee:
         assignee = task.assignee
+        already_assign = True
     else:
         assignee = 'None'
+        already_assign = False
     new_info = [name, subject, task.name, task.description, task.identifier, task.allotted_time, is_unique, 0,
-                task.sprint, task.status, assignee]
-    print (new_info)
+                assignee, task.status,already_assign]
     db.loc[i] = new_info
 
 
+
 def create_db_impossible_tasks():
-    db = pd.DataFrame({Constants.ID2: pd.Series(dtype='int'),
+    db = pd.DataFrame({Constants.IDENTIFIER: pd.Series(dtype='int'),
                        Constants.SUBJECT: pd.Series(dtype='str'),
                        Constants.DESCRIPTION: pd.Series(dtype='str'),
                        Constants.ALLOTTED_TIME: pd.Series(dtype='float')})
@@ -82,13 +84,17 @@ class WorkerInfo:
         self.set_all_workers()
         self.df_tasks_db = create_db_possible_tasks()
         i = 0
+        print ("budgettttttttttttttttttttttttttttttttttttttt")
         possible_workers = []
 
         for task in self.all_tasks.values():
 
             subject = task.subject
             possible_workers = self.who_can_do_it(task)
+            print(task.identifier)
+            print (possible_workers)
             if len(possible_workers) == Constants.ONE:
+                print ("99000000000000000000000000000000000000000000000000")
                 update_initial_information_db_table(self.df_tasks_db, possible_workers[0].name, subject, task,
                                                     Constants.UNIQUE,
                                                     i)
