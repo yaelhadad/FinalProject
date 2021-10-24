@@ -1,5 +1,5 @@
 import pandas as pd
-from login import db, Impossible, Assigned
+from run import db, Impossible, Assigned
 import numpy as np
 from generate_tasks import GenerateTask
 from processing_workers_info import WorkerInfo
