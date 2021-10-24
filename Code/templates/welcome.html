@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/welcome.css')}}">
+
+</head>
+<body>
+           <h1 class="page-header text-primary text-center" style="color: orange;"><span class="fa fa-image">
+               Welcome {{ user }}!   </span></h1>
+            <h1 class="page-header text-primary text-center" style="color: orange;"><span class="fa fa-image">Thanks for joining us! </span></h1>
+                   <form action="/login" method="POST">
+                  <div class="text-center">
+               <br> <button type="submit" style="background-color:orange" >Login and Get started </button></br>
+                </div>
+                </form></br>
+<img src="static/img/logo_task.jpg" class="img-fluid" alt="">
+</body>
+
+</html>
