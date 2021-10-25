@@ -1,6 +1,6 @@
 import unittest
 import pandas as pd
-
+import numpy as np
 from validate import ValidWorkersFile, ValidTasksFile
 from generate_tasks import GenerateTask
 from constants import Constants
@@ -10,11 +10,6 @@ from pandas.testing import assert_frame_equal
 
 class TestValidWorkersFile(unittest.TestCase):
 
-    def test_invalid_worker_name(self):
-        workers_file = ValidWorkersFile(
-            pd.read_csv(f"{Constants.root_dir}/{Constants.valid_workers_info}/{Constants.workers_info_not_found}"))
-        with self.assertRaises(ValueError):
-            workers_file.valid_values()
 
     def test_empty_table(self):
         workers_file = ValidWorkersFile(
@@ -98,18 +93,22 @@ class TestWorkerInfo(unittest.TestCase):
     def test_1_task_workers_can_not_do_it_time(self):
         tasks = GenerateTask(
             pd.read_csv(f"{Constants.root_dir}/{Constants.generate_tasks}/{Constants.task_1_impossible_hours}"))
-        with self.assertRaises(ValueError):
-            pos_tasks = WorkerInfo(
-                pd.read_csv(f"{Constants.root_dir}/{Constants.worker_info}/{Constants.work_table_all}"),
-                tasks.all_tasks)
+        impossible_tasks = WorkerInfo(pd.read_csv(f"{Constants.root_dir}/{Constants.worker_info}/{Constants.work_table_all}"),
+                               tasks.all_tasks)
+        df = pd.read_csv(f"{Constants.root_dir}/{Constants.worker_info_gold}/{Constants.impossible_task }")
+        assert_frame_equal(df, impossible_tasks.all_impossible_tasks)
 
-    def test_1_task_workers_can_not_do_it_expertise(self):
-        tasks = GenerateTask(
-            pd.read_csv(f"{Constants.root_dir}/{Constants.generate_tasks}/{Constants.task_1_impossible_expertise}"))
-        with self.assertRaises(ValueError):
-            pos_tasks = WorkerInfo(
-                pd.read_csv(f"{Constants.root_dir}/{Constants.worker_info}/{Constants.work_table_all}"),
-                tasks.all_tasks)
+    # def test_1_task_workers_can_not_do_it_expertise(self):
+    #     tasks = GenerateTask(
+    #         pd.read_csv(f"{Constants.root_dir}/{Constants.generate_tasks}/{Constants.task_1_impossible_expertise}"))
+    #     with self.assertRaises(ValueError):
+    #         pos_tasks = WorkerInfo(
+    #             pd.read_csv(f"{Constants.root_dir}/{Constants.worker_info}/{Constants.work_table_all}"),
+    #             tasks.all_tasks)
+
+# class TestAssigned(unittest.TestCase):
+#     def test_heartbeat_already_assigned(self):
+
 
 
 if __name__ == '__main__':
