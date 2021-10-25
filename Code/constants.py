@@ -48,7 +48,7 @@ class Constants:
     AVAILABILITY = "availability"
     SECOND = 1
 
-    root_dir = r"C:\Users\User\PycharmProjects\FinalProject\UnitTesting"
+    root_dir = r"C:\Users\Yael Hadad\PycharmProjects\FinalProject1\UnitTesting"
 
     valid_workers_info = "Valid_workers_info"
     workers_info_not_found = "workers_info_worker_not_found.csv"
@@ -77,4 +77,4 @@ class Constants:
     proc_tasks1 = "proc_tasks_1_task.csv"
     proc_tasks1_all = "proc_tasks_1_all.csv"
     proc_tasks9 = "proc_tasks_9_tasks.csv"
-    proc_tasks_empty = "proc_tasks_empty.csv"
+    impossible_task = "impossible_task.csv"

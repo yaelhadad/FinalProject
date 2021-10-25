@@ -1,8 +1,7 @@
 import numpy as np
 from processing_workers_info import update_impossible_tasks, create_db_impossible_tasks
 from constants import Constants
-
-
+from jinja2 import Template
 def assign_task(task, worker):
     task.set_task(Constants.ASSIGNED, worker.name)
     worker.update_assigned_task(task)
@@ -91,4 +90,5 @@ class Assign:
             # Decide what to do if a task appear in the optional list of multiple workers
             if not row.loc[Constants.IS_UNIQUE] and task.status not in (Constants.ASSIGNED, Constants.IMPOSSIBLE):
                 self.decide_who_will_assign(self.all_tasks[row.loc[Constants.TASK]])
-
+        all_workers_info = self.all_workers
+        print ("llll", all_workers_info.values())
