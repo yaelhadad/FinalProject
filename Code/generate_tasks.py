@@ -1,6 +1,17 @@
 from task import Task
 import math
 from constants import Constants
+import numpy as np
+import pandas as pd
+
+
+def isBlank(cell_value):
+    myString = str(cell_value)
+    if myString and myString.strip():
+        # myString is not None AND myString is not empty or blank
+        return False
+    # myString is None OR myString is empty or blank
+    return True
 
 
 class GenerateTask:
@@ -15,6 +26,7 @@ class GenerateTask:
         self.all_tasks = {}
         self.run()
 
+
     def set_task(self, priority, row, location_in_queue):
         name = priority + str(location_in_queue)
         identify = self.sort_queue.loc[row, Constants.ID]
@@ -24,15 +36,14 @@ class GenerateTask:
         assignee = self.sort_queue.loc[row, Constants.ASSIGNEE]
         status = self.sort_queue.loc[row, Constants.STATUS]
         general_location = row
-        if assignee:
+        if isBlank(assignee):
             already_assigned = True
         else:
             already_assigned = False
+
         return Task(name, identify, subject, description, allotted_time, assignee, priority, status,
                     general_location, location_in_queue, already_assigned)
-        # locals()[name] = Task(name, identify, subject, description, allotted_time, assignee, priority, status,
-        #                       general_location,location_in_queue,sprint)
-        # self.all_tasks.append(locals()[name])
+
 
     def set_all_tasks_by_priority(self, start_range, end_range, priority, general_index, priority_index, prev_idx):
         for general_index, row in self.sort_queue.loc[start_range: end_range - prev_idx].iterrows():

@@ -15,19 +15,14 @@ def create_db_possible_tasks():
                        Constants.BUDGET_FOR_UNIQUE_BELLOW: pd.Series(dtype='float'),
                        Constants.ALREADY_ASSIGNED: pd.Series(dtype='str'),
                        Constants.STATUS: pd.Series(dtype='str'),
-                       Constants.IS_ASSIGNED: pd.Series(dtype='str')})
+                       Constants.IS_ASSIGNED: pd.Series(dtype='bool')})
     return db
 
 
 def update_initial_information_db_table(db, name, subject, task, is_unique, i):
-    if task.assignee:
-        assignee = task.assignee
-        already_assign = True
-    else:
-        assignee = 'None'
-        already_assign = False
+
     new_info = [name, subject, task.name, task.description, task.identifier, task.allotted_time, is_unique, 0,
-                assignee, task.status,already_assign]
+                task.assignee, task.status,task.already_assigned]
     db.loc[i] = new_info
 
 
@@ -85,6 +80,7 @@ class WorkerInfo:
         self.df_tasks_db = create_db_possible_tasks()
         i = 0
         print ("budgettttttttttttttttttttttttttttttttttttttt")
+
         possible_workers = []
 
         for task in self.all_tasks.values():
@@ -113,3 +109,4 @@ class WorkerInfo:
                 j += 1
 
                 print(str(task.identifier) + ' ' + task.name + Constants.IMPOSSIBLE)
+        print("aaaa",self.df_tasks_db)

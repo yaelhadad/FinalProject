@@ -11,12 +11,16 @@ import argparse
 import errno
 import os
 import sqlalchemy
+all_workers_info = {}
+budget_of_all = []
+
+
 
 def main():
 
     engine = sqlalchemy.create_engine('sqlite:///Task_Assigner.db')
     workers_table = pd.read_sql('SELECT * FROM workers',engine)
-    print(workers_table)
+    print(type(workers_table))
 
     tasks_table = pd.read_sql('SELECT * FROM tasks',engine)
     print(tasks_table)
@@ -31,6 +35,7 @@ def main():
     processing_workers = WorkerInfo(workers_table, tasks.all_tasks)
     # Previous sprint update the main task to worker table
 
+
     already_assigned = AlreadyAssigned(processing_workers.df_tasks_db)
 
     # Prepare Information fo the algorithm - What is the  budget of all the
@@ -38,7 +43,7 @@ def main():
 
     budget_for_unique_tasks_table = BudgetUnique(already_assigned.config_file)
     # Processing- the algorithm
-    print("bbb",budget_for_unique_tasks_table.config_file)
+    print("bbb",budget_for_unique_tasks_table.config_file.shape[0])
     assign = Assign(budget_for_unique_tasks_table.config_file, tasks.all_tasks, processing_workers.all_workers,
                     processing_workers.all_impossible_tasks)
 
@@ -53,6 +58,14 @@ def main():
 
     print(processing_workers.all_impossible_tasks)
     # TBD -View availability
+    print(processing_workers.all_workers.values())
+    for worker in processing_workers.all_workers.values():
+        budget = str(float(worker.count_current_hours) / float(worker.availability_initial) * 100) +"%"
+        budget_of_all.append(budget)
+    workers_table["Budget"] = budget_of_all
+    workers = workers_table.to_sql('workers', engine, if_exists='replace', index=False)
+    print (budget_of_all)
+
 
 
 

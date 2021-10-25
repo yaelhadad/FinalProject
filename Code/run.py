@@ -33,7 +33,6 @@ all_workers_get_task_names = {}
 
 
 
-
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(15), unique=True)
@@ -61,6 +60,7 @@ class Workers(db.Model):
     Total_hours = db.Column(db.Float)
     Total_hours_at_begin = db.Column(db.Float)
     Expertise = db.Column(db.String)
+    Budget = db.Column(db.String)
 
 
 class Assigned(db.Model):
@@ -96,7 +96,7 @@ class LoginForm(FlaskForm):
 class RegisterForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
-    role = SelectField('role', validators=[DataRequired()], choices=[('member', 'manager')])
+    role = SelectField('role', validators=[DataRequired()], choices=[('manager', 'manager'),('member', 'member')])
     password = PasswordField('password', validators=[InputRequired(), Length(min=4, max=8)])
 
 
@@ -187,7 +187,7 @@ def upload_csv_files():
                 return '<h1> Invalid file, load csv file'
             for row in csv_reader_workers:
                 worker = Workers(Name=row[0], Role=row[1], Total_hours=row[2], Total_hours_at_begin=row[3],
-                                     Expertise=row[4])
+                                     Expertise=row[4],Budget='')
                 db.session.add(worker)
                 db.session.commit()
 
@@ -208,7 +208,7 @@ def view_tasks():
 @app.route('/view_workers')
 def view_workers():
     engine = sqlalchemy.create_engine('sqlite:///Task_Assigner.db')
-    df = pd.read_sql('select * from workers', engine)
+    df = pd.read_sql('select Name,Role,Total_hours, Total_hours_at_begin,Expertise from workers ', engine)
     return render_template("view.html",
                            data=df.to_html(index=False, classes="table table-striped"),
                            title="Workers table")
@@ -231,9 +231,11 @@ def assign():
 def tasks_assigned():
     #db.create_all()
     try:
+        print ("aa")
         count_tasks_for_each_worker = {}
         engine = sqlalchemy.create_engine('sqlite:///Task_Assigner.db')
-        all_workers = db.session.query(Workers).all()
+        all_workers = db.session.query(Workers.Name).all()
+        budget_all_workers = db.session.query(Workers.Budget).all()
         workers_get_tasks = db.session.query(Assigned).all()
         for worker in workers_get_tasks:
             all_workers_get_task_names[worker.Name] = db.session.query(Assigned).filter_by(Name=worker.Name)
@@ -249,7 +251,7 @@ def tasks_assigned():
             msg1 = "All the tasks were assigned successfully!"
             msg2 = "Good Luck!"
         return render_template('tasks_assigned.html', data=all_workers, tasks_number=tasks_number,
-                               msg1=msg1, msg2 = msg2, count=count_tasks_for_each_worker)
+                               msg1=msg1, msg2 = msg2, count=count_tasks_for_each_worker, budget = budget_all_workers )
     except Exception:
         print("Exception in user code:")
         traceback.print_exc(file=sys.stdout)
