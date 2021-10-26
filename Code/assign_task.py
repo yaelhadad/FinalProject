@@ -1,6 +1,7 @@
 import numpy as np
 from processing_workers_info import update_impossible_tasks, create_db_impossible_tasks
 from constants import Constants
+import pandas as pd
 from jinja2 import Template
 def assign_task(task, worker):
     task.set_task(Constants.ASSIGNED, worker.name)
@@ -81,6 +82,8 @@ class Assign:
     def run(self):
         # self.config_file.to_csv(
         #     r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test6\before_assign_gold.csv")
+        self.config_file['Manager'] = pd.Series(dtype='str')
+        self.config_file['Project'] = pd.Series(dtype='str')
         self.config_file = self.config_file.sort_values(by=[Constants.TASK])
         # Check if the task is unique:
         for idx, row in self.config_file.iterrows():
