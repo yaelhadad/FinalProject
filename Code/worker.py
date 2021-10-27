@@ -40,7 +40,11 @@ class Worker:
 
     def enough_time(self, task):
         if task.priority == 'A':
+            print ("9999")
+            print (type(self.availability_start_sprint))
+            print (type(task.allotted_time))
             optional_availability_A = self.availability_start_sprint - task.allotted_time
+            print("9999")
             if optional_availability_A <= 0:
                 return False
         optional_availability = self.availability - task.allotted_time
