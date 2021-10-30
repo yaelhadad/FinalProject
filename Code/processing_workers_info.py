@@ -57,8 +57,8 @@ class WorkerInfo:
     def set_worker(self, worker_info):
         name = self.config_file.loc[worker_info, Constants.NAME]
         role = self.config_file.loc[worker_info, Constants.ROLE]
-        availability = self.config_file.loc[worker_info, Constants.TOTAL]
-        availability_start = self.config_file.loc[worker_info, Constants.TOTAL_START]
+        availability = float(self.config_file.loc[worker_info, Constants.TOTAL])
+        availability_start = float(self.config_file.loc[worker_info, Constants.TOTAL_START])
         expertise = self.config_file.loc[worker_info, Constants.EXPERTISE]
         return Worker(name, None, role, expertise, availability, availability_start, count_current_hours=0,
                       current_tasks=[])

@@ -221,7 +221,12 @@ def view_tasks():
 @app.route('/view_workers')
 def view_workers():
     engine = sqlalchemy.create_engine('sqlite:///Task_Assigner.db')
-    df = pd.read_sql('select Name,Role,Total_hours, Total_hours_at_begin,Expertise from workers ', engine)
+    user = list(manager_projects)[-1]
+    project = manager_projects[user]
+    df = pd.read_sql(
+        'select Name, Total_hours, Total_hours_at_begin,Expertise from workers WHERE Manager = "%s" AND Project = "%s"' % (
+            user, project), engine)
+    #df = pd.read_sql('select Name,Role,Total_hours, Total_hours_at_begin,Expertise from workers ', engine)
     return render_template("view.html",
                            data=df.to_html(index=False, classes="table table-striped"),
                            title="Workers table")
@@ -246,24 +251,33 @@ def tasks_assigned():
         count_tasks_for_each_worker = {}
         manager = list(manager_projects)[-1]
         project = manager_projects[manager]
-        all_workers = db.session.query(Workers.Name).all()
-        budget_all_workers = db.session.query(Workers.Budget).all()
+        all_workers = db.session.query(Workers.Name).filter_by(Manager="%s" % manager, Project="%s" % project)
+        budget_all_workers = db.session.query(Workers.Budget).filter_by(Manager="%s" % manager, Project="%s" % project)
+        # all_workers = db.session.query(Workers.Name).all()
+        # budget_all_workers = db.session.query(Workers.Budget).all()
         workers_get_tasks = db.session.query(Assigned).filter_by(Manager="%s" % manager, Project="%s" % project)
         for worker in workers_get_tasks:
             all_workers_get_task_names[worker.Name] = db.session.query(Assigned).filter_by(Name=worker.Name,Manager="%s" % manager, Project="%s" % project)
             count_tasks_for_each_worker[worker.Name] = all_workers_get_task_names[worker.Name].count()
         tasks_number = db.session.query(Tasks).filter_by(Manager="%s" % manager, Project="%s" % project).count()
         are_any_impossible = db.session.query(Impossible).first()
+        impossible = None
         if are_any_impossible:
-            impossible_tasks = db.session.query(Impossible).count()
-            assigned_tasks_sum = str(tasks_number - impossible_tasks)
-            msg1 = "%s tasks are impossible" % (impossible_tasks)
-            msg2 = "%s tasks were assigned." % (assigned_tasks_sum)
+            count_impossible_tasks = db.session.query(Impossible).count()
+            impossible_tasks = [task_impos.ID for task_impos in db.session.query(Impossible).all()]
+            impossible = db.session.query(Impossible).all
+            assigned_tasks_sum = str(tasks_number - count_impossible_tasks)
+            if count_impossible_tasks >1:
+                msg1 = "%s tasks are impossible:  %s" % (count_impossible_tasks, str(impossible_tasks))
+            else:
+                msg1 = "%s task is impossible:  %s" % (count_impossible_tasks, str(impossible_tasks))
+            msg2 = "%s tasks were assigned." % assigned_tasks_sum
+
         else:
             msg1 = "All the tasks were assigned successfully!"
             msg2 = "Good Luck!"
         return render_template('tasks_assigned.html', data=all_workers, tasks_number=tasks_number,
-                               msg1=msg1, msg2=msg2, count=count_tasks_for_each_worker, budget=budget_all_workers)
+                               msg1=msg1, msg2=msg2, count=count_tasks_for_each_worker, budget=budget_all_workers, impossible=impossible)
     except Exception:
         print("Exception in user code:")
         traceback.print_exc(file=sys.stdout)
@@ -289,7 +303,7 @@ def view_tasks_for_worker(WorkerName):
 
 @app.route('/exit_view', methods=['GET', 'POST'])
 def exit_view():
-    return redirect(url_for("upload_csv_files"))
+    return redirect(url_for("index"))
 
 
 if __name__ == '__main__':

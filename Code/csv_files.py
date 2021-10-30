@@ -17,18 +17,19 @@ def csv_upload(Tasks, Workers, user_projects, db, manager, project):
             return '<h1> Invalid file, load csv file'
         for row in csv_reader_tasks:
             task = Tasks(ID_Task=row[0], Status=row[1], Description=row[2], Subject=row[3], Assignee=row[4],
-                         Queue=row[5], Allotted_time=row[6], Review_Time=row[7], Manager=manager,
+                         Queue=float(row[5]), Allotted_time=float(row[6]), Review_Time=float(row[7]), Manager=manager,
                          Project=user_projects[manager])
             db.session.add(task)
             db.session.commit()
 
 
-    elif request.files.get('upload_workers'):
+    if request.files.get('upload_workers'):
         workers_csv = request.files['upload_workers']
         workers_csv = TextIOWrapper(workers_csv, encoding='utf-8')
         csv_reader_workers = csv.reader(workers_csv, delimiter=',')
-        if db.session.query(Workers).count() >= 1:
-            db.session.query(Workers).delete()
+        if db.session.query(Workers).filter_by(Manager="%s" % manager, Project="%s" % project).count() >= 1:
+            print("88888888888888888888888888888888888888888888888888888")
+            db.session.query(Workers).filter_by(Manager="%s" % manager, Project="%s" % project).delete()
             db.session.commit()
         try:
             first_row = next(csv_reader_workers)
@@ -36,6 +37,6 @@ def csv_upload(Tasks, Workers, user_projects, db, manager, project):
             return '<h1> Invalid file, load csv file'
         for row in csv_reader_workers:
             worker = Workers(Name=row[0], Role=row[1], Total_hours=float(row[2]), Total_hours_at_begin=float(row[3]),
-                             Expertise=row[4], Budget='')
+                             Expertise=row[4], Budget='', Manager=manager, Project=user_projects[manager])
             db.session.add(worker)
             db.session.commit()
