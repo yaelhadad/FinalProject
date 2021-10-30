@@ -106,7 +106,7 @@ def main():
     # TBD -View availability
     print(processing_workers.all_workers.values())
     for worker in processing_workers.all_workers.values():
-        budget = str(float(worker.count_current_hours) / float(worker.availability_initial) * 100) + "%"
+        budget = str(round(float(worker.count_current_hours) / float(worker.availability_initial) * 100,2))+ "%"
         budget_of_all.append(budget)
     ### this one is the current delta
     print ("yyyyy")
@@ -136,7 +136,7 @@ def main():
         print ("eeeee", e)
         #workers_table['index'] = range(1, len(workers_table) + 1)
         print (workers_table)
-        workers_table = workers_table.rename(columns={"id": "index"})
+
         print(workers_table)
         #workers_table.reset_index()
         # inital table

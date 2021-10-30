@@ -37,9 +37,9 @@ class GenerateTask:
         status = self.sort_queue.loc[row, Constants.STATUS]
         general_location = row
         if isBlank(assignee):
-            already_assigned = True
-        else:
             already_assigned = False
+        else:
+            already_assigned = True
 
         return Task(name, identify, subject, description, allotted_time, assignee, priority, status,
                     general_location, location_in_queue, already_assigned)

@@ -58,7 +58,7 @@ class Tasks(db.Model):
 
 
 class Workers(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    index = db.Column(db.Integer, primary_key=True)
     Name = db.Column(db.String)
     Role = db.Column(db.String)
     Total_hours = db.Column(db.Float)
@@ -197,11 +197,15 @@ def upload_csv_files():
     print(manager_projects)
     manager = list(manager_projects)[-1]
     project = manager_projects[manager]
+    if db.session.query(Assigned).filter_by(Manager="%s" % manager, Project="%s" % project).count() >= 1 :
+        msg = "Note: The project '%s' exists, Notice that if you upload files you will overwrite the old files." % project
+    else:
+        msg = "Note: The project '%s' is a  new project, Upload your files" % project
     if request.method == 'POST':
         csv_upload(Tasks, Workers, manager_projects, db, manager, project)
         return redirect(url_for('upload_csv_files'))
 
-    return render_template("upload_csv_files.html")
+    return render_template("upload_csv_files.html", msg=msg)
 
 
 @app.route('/view_tasks')
