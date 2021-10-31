@@ -35,14 +35,9 @@ def create_db_impossible_tasks():
     return db
 
 
-def update_impossible_tasks(db, id, subject, description, allotted_time, i = -1):
+def update_impossible_tasks(db, id, subject, description, allotted_time):
     new_info = [id, subject, description, allotted_time]
-    if i!=-1:
-        db.loc[i] = new_info
-    else:
-        db.loc[len(db)] = new_info
-
-
+    db.loc[len(db)] = new_info
 
 class WorkerInfo:
 
@@ -75,13 +70,20 @@ class WorkerInfo:
                 possible_workers.append(worker)
         return possible_workers
 
+    def update_initial_impossible_tasks(self, id, subject, description, allotted_time, i):
+        new_info = [id, subject, description, allotted_time]
+        self.all_impossible_tasks.loc[i] = new_info
+
     def run(self):
         self.set_all_workers()
         self.df_tasks_db = create_db_possible_tasks()
+        ## index for possible tasks
         i = 0
+        ## index for impossible tasks
+        j = 0
         possible_workers = []
+        self.all_impossible_tasks = create_db_impossible_tasks()
         for task in self.all_tasks.values():
-
             subject = task.subject
             possible_workers = self.who_can_do_it(task)
             if len(possible_workers) == Constants.ONE:
@@ -95,10 +97,9 @@ class WorkerInfo:
                     update_initial_information_db_table(self.df_tasks_db, pos_worker.name, subject, task,
                                                         Constants.NOT_UNIQUE, i)
                     i += 1
-            j = 0
+
             if len(possible_workers) == Constants.ZERO:
-                self.all_impossible_tasks = create_db_impossible_tasks()
-                update_impossible_tasks(self.all_impossible_tasks, task.identifier, task.subject, task.description,
+                self.update_initial_impossible_tasks(task.identifier, task.subject, task.description,
                                         task.allotted_time, j)
                 j += 1
 

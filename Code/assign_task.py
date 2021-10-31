@@ -40,8 +40,6 @@ class Assign:
             name = row.loc[Constants.NAME]
             budget = row.loc[Constants.BUDGET_UNIQUE]
             worker = self.all_workers[name]
-            # print (worker.availability_start_sprint)
-            # print(worker.availability)
             if not worker.verify_optional_task_before_assign(task, budget):
                 df_possible_workers = df_possible_workers.drop(idx)
                 self.remove_needless_optional_workers(idx)

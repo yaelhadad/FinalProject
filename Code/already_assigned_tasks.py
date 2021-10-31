@@ -16,7 +16,7 @@ class AlreadyAssigned:
                                                                        Constants.IS_UNIQUE] == False)].index)
 
     def run(self):
-        print(self.config_file)
+
         is_already_assigned = any(self.config_file[Constants.IS_ASSIGNED].to_list())
         if is_already_assigned:
             already_assigned_tasks = self.config_file[self.config_file[Constants.IS_ASSIGNED]]

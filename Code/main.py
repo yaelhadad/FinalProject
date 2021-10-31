@@ -47,12 +47,9 @@ def main():
     # From the configure file generate the "main task for worker" table
     processing_workers = WorkerInfo(workers_table, tasks.all_tasks)
     # Already assigned
-
     already_assigned = AlreadyAssigned(processing_workers.df_tasks_db)
-
     # Prepare Information fo the algorithm - What is the  budget of all the
     # unique tasks that are less urgent than the optional task
-
     budget_for_unique_tasks_table = BudgetUnique(already_assigned.config_file)
     # Processing- the algorithm
 
