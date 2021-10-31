@@ -7,7 +7,7 @@ import pandas as pd
 
 def isBlank(cell_value):
     myString = str(cell_value)
-    if myString and myString.strip():
+    if myString and myString.strip() and myString != "nan":
         # myString is not None AND myString is not empty or blank
         return False
     # myString is None OR myString is empty or blank
@@ -34,8 +34,11 @@ class GenerateTask:
         description = self.sort_queue.loc[row, Constants.DESCRIPTION]
         allotted_time = float(self.sort_queue.loc[row, Constants.ESTIMATED_TIME]) + float(self.sort_queue.loc[row, Constants.Review_TIME])
         assignee = self.sort_queue.loc[row, Constants.ASSIGNEE]
+        print ("aa", assignee)
         status = self.sort_queue.loc[row, Constants.STATUS]
         general_location = row
+        if assignee == "Ron":
+            print ("gggggggggggggggggggggggggggggggggggggggggggggggggggggggg",isBlank(assignee))
         if isBlank(assignee):
             already_assigned = False
         else:
@@ -48,6 +51,7 @@ class GenerateTask:
     def set_all_tasks_by_priority(self, start_range, end_range, priority, general_index, priority_index, prev_idx):
         for general_index, row in self.sort_queue.loc[start_range: end_range - prev_idx].iterrows():
             current_task = self.set_task(priority, general_index, priority_index)
+            print(current_task.already_assigned)
             priority_index += 1
             # print("the task", current_task)
             self.all_tasks[current_task.name] = current_task

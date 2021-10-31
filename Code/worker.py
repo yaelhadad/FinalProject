@@ -45,10 +45,10 @@ class Worker:
             print (type(task.allotted_time))
             optional_availability_A = self.availability_start_sprint - task.allotted_time
             print("9999")
-            if optional_availability_A <= 0:
+            if optional_availability_A < 0:
                 return False
         optional_availability = self.availability - task.allotted_time
-        if optional_availability <= 0:
+        if optional_availability < 0:
             return False
         return True
 

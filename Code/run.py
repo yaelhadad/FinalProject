@@ -89,15 +89,15 @@ class Assigned(db.Model):
 
 class Impossible(db.Model):
     __tablename__ = 'impossible'
-    index = db.Column(db.Integer, primary_key=True)
-    ID = db.Column(db.Integer)
+
+    ID = db.Column(db.Integer, primary_key=True)
     Subject = db.Column(db.String)
     Description = db.Column(db.String)
     Allotted_time = db.Column(db.Float)
 
 
 class LoginForm(FlaskForm):
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
+    username = StringField('username', validators=[InputRequired(), Length(min=3, max=15)])
     password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
     remember = BooleanField('remember me')
     project = StringField('project', validators=[InputRequired(), Length(min=4, max=15)])
@@ -105,7 +105,7 @@ class LoginForm(FlaskForm):
 
 class RegisterForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
+    username = StringField('username', validators=[InputRequired(), Length(min=3, max=15)])
     role = SelectField('role', validators=[DataRequired()], choices=[('manager', 'manager'), ('member', 'member')])
     password = PasswordField('password', validators=[InputRequired(), Length(min=4, max=8)])
 
@@ -118,7 +118,8 @@ def is_user_has_project(name, project):
 
 def get_assigned_tasks(name, project):
     print((name, project))
-    query = 'select Name, Description, ID, Allotted_time, Status from assigned WHERE Name ="%s" AND Project = "%s"' % (name, project)
+    query = 'select Name, Description, Expertise, ID, Allotted_time, Status from assigned WHERE Name ="%s" ' \
+            'AND Project = "%s"' % (name, project)
     engine = sqlalchemy.create_engine('sqlite:///Task_Assigner.db')
     print(pd.read_sql(query, engine))
     return pd.read_sql(query, engine)
@@ -294,8 +295,8 @@ def view_tasks_for_worker(WorkerName):
     for name, value in all_workers_get_task_names.items():
         df = pd.DataFrame()
         df = pd.read_sql(value.statement, db.session.bind)
-        df = df.drop([Constants.IS_UNIQUE, Constants.BUDGET_UNIQUE, Constants.ALREADY_ASSIGNED, Constants.IS_ASSIGNED, "Manager", "Project"],
-                     axis=1)
+        df = df.drop([Constants.IS_UNIQUE, Constants.BUDGET_UNIQUE, Constants.ALREADY_ASSIGNED, Constants.IS_ASSIGNED,
+                      "Manager", "Project","index"], axis=1)
         workers_tasks[name] = df
     if WorkerName not in all_workers_get_task_names.keys():
         return 'Worker did not get tasks'

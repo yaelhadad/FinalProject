@@ -95,7 +95,7 @@ def main():
     else:
         assigned = updated_assigned.to_sql('assigned', engine, if_exists='append')
     if not assign.all_impossible_tasks.empty:
-        impossible = assign.all_impossible_tasks.to_sql('impossible', engine, if_exists='replace')
+        impossible = assign.all_impossible_tasks.to_sql('impossible', engine, if_exists='replace', index=False)
     else:
         db.session.query(Impossible).delete()
         db.session.commit()

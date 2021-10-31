@@ -80,6 +80,7 @@ class WorkerInfo:
         self.df_tasks_db = create_db_possible_tasks()
         i = 0
         print ("budgettttttttttttttttttttttttttttttttttttttt")
+        print (self.config_file)
 
         possible_workers = []
 
@@ -110,3 +111,6 @@ class WorkerInfo:
 
                 print(str(task.identifier) + ' ' + task.name + Constants.IMPOSSIBLE)
         print("aaaa",self.df_tasks_db)
+        self.df_tasks_db.to_csv(
+            r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test1\proc_tasks11.csv",
+            index=False)
