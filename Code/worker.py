@@ -22,7 +22,7 @@ class Worker:
         self.count_current_hours = self.count_current_hours+ task.allotted_time
         self.current_tasks.append(task.identifier)
 
-    def verify_optional_task_before_devide(self, task, budget):
+    def verify_optional_task_before_assign(self, task, budget):
         optional_availability = self.availability - task.allotted_time
         if optional_availability < 0:
             return False
@@ -40,11 +40,7 @@ class Worker:
 
     def enough_time(self, task):
         if task.priority == 'A':
-            print ("9999")
-            print (type(self.availability_start_sprint))
-            print (type(task.allotted_time))
             optional_availability_A = self.availability_start_sprint - task.allotted_time
-            print("9999")
             if optional_availability_A < 0:
                 return False
         optional_availability = self.availability - task.allotted_time
@@ -52,13 +48,4 @@ class Worker:
             return False
         return True
 
-    def print_current(self):
-        print("\n")
-        print(self.name)
-        print("avalibility", self.availability)
-        print("initial avalibility", self.availability_initial)
-        print("avalibility in the first week", self.availability_start_sprint)
-        print("current_hours:", self.count_current_hours)
-        budget = str(float(self.count_current_hours)/float(self.availability_initial)*100)
-        print("budget is: %s" % (budget) + "%")
-        print(self.current_tasks)
+

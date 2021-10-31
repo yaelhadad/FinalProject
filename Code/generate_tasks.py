@@ -32,13 +32,10 @@ class GenerateTask:
         identify = self.sort_queue.loc[row, Constants.ID]
         subject = self.sort_queue.loc[row, Constants.SUBJECT]
         description = self.sort_queue.loc[row, Constants.DESCRIPTION]
-        allotted_time = float(self.sort_queue.loc[row, Constants.ESTIMATED_TIME]) + float(self.sort_queue.loc[row, Constants.Review_TIME])
+        allotted_time = float(self.sort_queue.loc[row, Constants.ESTIMATED_TIME]) + float(self.sort_queue.loc[row,Constants.Review_TIME])
         assignee = self.sort_queue.loc[row, Constants.ASSIGNEE]
-        print ("aa", assignee)
         status = self.sort_queue.loc[row, Constants.STATUS]
         general_location = row
-        if assignee == "Ron":
-            print ("gggggggggggggggggggggggggggggggggggggggggggggggggggggggg",isBlank(assignee))
         if isBlank(assignee):
             already_assigned = False
         else:
@@ -51,14 +48,11 @@ class GenerateTask:
     def set_all_tasks_by_priority(self, start_range, end_range, priority, general_index, priority_index, prev_idx):
         for general_index, row in self.sort_queue.loc[start_range: end_range - prev_idx].iterrows():
             current_task = self.set_task(priority, general_index, priority_index)
-            print(current_task.already_assigned)
             priority_index += 1
-            # print("the task", current_task)
             self.all_tasks[current_task.name] = current_task
         return general_index
 
     def run(self):
-        print (self.LEN_ALL_TASKS)
         if self.LEN_ALL_TASKS < 3 :
             last_task_group1 = self.set_all_tasks_by_priority(Constants.FIRST, self.ALL_TASKS_RANGE_A,
                                                               Constants.PRIORITY_A, Constants.FIRST, Constants.FIRST_ONE, 0)
@@ -73,9 +67,7 @@ class GenerateTask:
         # Set the tasks with priority A
         last_task_group1 = self.set_all_tasks_by_priority(Constants.FIRST, self.ALL_TASKS_RANGE_A, Constants.PRIORITY_A,
                                                           Constants.FIRST, Constants.FIRST_ONE,Constants.PREV_INDEX)
-        print (last_task_group1)
-        # print("self.ALL_TASKS_RANGE_A", self.ALL_TASKS_RANGE_A)
-        # print ("aaa",self.all_tasks)
+
         # Set the tasks with priority B
         count = Constants.FIRST_ONE
         last_task_group2 = self.set_all_tasks_by_priority(self.ALL_TASKS_RANGE_A, self.ALL_TASKS_RANGE_B,
@@ -87,9 +79,4 @@ class GenerateTask:
                                                               Constants.PRIORITY_C, last_task_group2, count, Constants.PREV_INDEX)
 
 
-        print("tasks", self.all_tasks)
-        ### Testing
-        # for task in self.all_tasks:
-        #     print(task.identifier)
-        #     print (task.name)
-        #     print(task.subject)
+

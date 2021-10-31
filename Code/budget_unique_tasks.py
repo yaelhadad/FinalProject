@@ -18,6 +18,5 @@ class BudgetUnique:
                     count_budget = count_budget + float(row.loc[Constants.ALLOTTED_TIME])
                 else:
                     self.config_file.at[idx, Constants.BUDGET_UNIQUE] = str(count_budget)
-        # self.config_file.to_csv(
-        #     r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\Try_Pandas\sprint_23_9\BUDGET_BUGS.csv")
+
 

@@ -22,5 +22,3 @@ class Task:
         self.status = status
         self.assignee = assignee
 
-    def print_task(self):
-        print(self.status, self.assignee)

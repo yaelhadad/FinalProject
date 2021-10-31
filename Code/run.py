@@ -117,11 +117,10 @@ def is_user_has_project(name, project):
         return True
 
 def get_assigned_tasks(name, project):
-    print((name, project))
+
     query = 'select Name, Description, Expertise, ID, Allotted_time, Status from assigned WHERE Name ="%s" ' \
             'AND Project = "%s"' % (name, project)
     engine = sqlalchemy.create_engine('sqlite:///Task_Assigner.db')
-    print(pd.read_sql(query, engine))
     return pd.read_sql(query, engine)
 
 @login_manager.user_loader
@@ -143,7 +142,6 @@ def tutorial():
 def signup():
     form = RegisterForm()
     user_roles[form.username.data] = form.role.data
-    print ("signup", user_roles)
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
         new_user = User(username=form.username.data, email=form.email.data, password=hashed_password,role=form.role.data)
@@ -164,13 +162,12 @@ def login():
     if user:
         if check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            print ("login", user_roles)
+
             if User.query.filter_by(username=form.username.data).first().role== "manager":
                 return redirect(url_for('upload_csv_files'))
             else:
                 if is_user_has_project(form.username.data, form.project.data):
                     assigned_tasks_for_member = get_assigned_tasks(form.username.data, form.project.data)
-                    print(assigned_tasks_for_member)
                     #edirect(url_for('view_tasks_for_worker(%s)' % user))
                     return render_template("view.html",
                                data=assigned_tasks_for_member.to_html(index=False, classes="table table-striped"),
@@ -195,7 +192,7 @@ def welcome():
 @app.route('/upload_csv_files', methods=['GET', 'POST'])
 @login_required
 def upload_csv_files():
-    print(manager_projects)
+
     manager = list(manager_projects)[-1]
     project = manager_projects[manager]
     if db.session.query(Assigned).filter_by(Manager="%s" % manager, Project="%s" % project).count() >= 1 :
@@ -252,7 +249,7 @@ def assign():
 @app.route('/tasks_assigned', methods=['GET', 'POST'])
 def tasks_assigned():
     try:
-        print("aa")
+
         count_tasks_for_each_worker = {}
         manager = list(manager_projects)[-1]
         project = manager_projects[manager]

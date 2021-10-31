@@ -42,23 +42,18 @@ class Assign:
             worker = self.all_workers[name]
             # print (worker.availability_start_sprint)
             # print(worker.availability)
-            if not worker.verify_optional_task_before_devide(task, budget):
+            if not worker.verify_optional_task_before_assign(task, budget):
                 df_possible_workers = df_possible_workers.drop(idx)
                 self.remove_needless_optional_workers(idx)
-        if self.all_impossible_tasks.empty:
-              print(self.all_impossible_tasks)
-        else:
-
-            print("AAAA", self.all_impossible_tasks)
 
         if df_possible_workers.empty:
             if self.all_impossible_tasks.empty:
                 self.all_impossible_tasks=create_db_impossible_tasks()
             update_impossible_tasks(self.all_impossible_tasks,int(task.identifier),task.subject, task.description,
                                     float(task.allotted_time))
-            print(self.config_file)
+
             self.config_file = self.config_file[self.config_file.ID != task.identifier]
-            print ("00")
+
             task.status = Constants.IMPOSSIBLE
             return
         if len(df_possible_workers.index) == Constants.ONLY_ONE and task.status != Constants.ASSIGNED:
@@ -78,10 +73,9 @@ class Assign:
             assign_task(task, self.all_workers[worker])
             self.remove_needless_optional_workers(index_drop)
 
-        print(task.name)
+
     def run(self):
-        # self.config_file.to_csv(
-        #     r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test6\before_assign_gold.csv")
+
         self.config_file['Manager'] = pd.Series(dtype='str')
         self.config_file['Project'] = pd.Series(dtype='str')
         self.config_file = self.config_file.sort_values(by=[Constants.TASK])
@@ -94,4 +88,3 @@ class Assign:
             if not row.loc[Constants.IS_UNIQUE] and task.status not in (Constants.ASSIGNED, Constants.IMPOSSIBLE):
                 self.decide_who_will_assign(self.all_tasks[row.loc[Constants.TASK]])
         all_workers_info = self.all_workers
-        print ("llll", all_workers_info.values())

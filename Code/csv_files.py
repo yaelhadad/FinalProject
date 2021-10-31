@@ -9,8 +9,11 @@ def csv_upload(Tasks, Workers, user_projects, db, manager, project):
         tasks_csv = TextIOWrapper(tasks_csv, encoding='utf-8')
         csv_reader_tasks = csv.reader(tasks_csv, delimiter=',')
         if db.session.query(Tasks).filter_by(Manager="%s" % manager, Project="%s" % project).count() >= 1:
-            db.session.query(Tasks).filter_by(Manager="%s" % manager, Project="%s" % project).delete()
-            db.session.commit()
+            try:
+                db.session.query(Tasks).filter_by(Manager="%s" % manager, Project="%s" % project).delete()
+                db.session.commit()
+            except:
+                return '<h1> Invalid format of the file. For mor details, read the tutorial'
         try:
             first_row = next(csv_reader_tasks)
         except:
@@ -28,9 +31,11 @@ def csv_upload(Tasks, Workers, user_projects, db, manager, project):
         workers_csv = TextIOWrapper(workers_csv, encoding='utf-8')
         csv_reader_workers = csv.reader(workers_csv, delimiter=',')
         if db.session.query(Workers).filter_by(Manager="%s" % manager, Project="%s" % project).count() >= 1:
-            print("88888888888888888888888888888888888888888888888888888")
-            db.session.query(Workers).filter_by(Manager="%s" % manager, Project="%s" % project).delete()
-            db.session.commit()
+            try:
+                db.session.query(Workers).filter_by(Manager="%s" % manager, Project="%s" % project).delete()
+                db.session.commit()
+            except:
+                return '<h1> Invalid format of the file. For mor details, read the tutorial'
         try:
             first_row = next(csv_reader_workers)
         except:
