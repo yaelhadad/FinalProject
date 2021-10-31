@@ -79,19 +79,12 @@ class WorkerInfo:
         self.set_all_workers()
         self.df_tasks_db = create_db_possible_tasks()
         i = 0
-        print ("budgettttttttttttttttttttttttttttttttttttttt")
-        print (self.config_file)
-
         possible_workers = []
-
         for task in self.all_tasks.values():
 
             subject = task.subject
             possible_workers = self.who_can_do_it(task)
-            print(task.identifier)
-            print (possible_workers)
             if len(possible_workers) == Constants.ONE:
-                print ("99000000000000000000000000000000000000000000000000")
                 update_initial_information_db_table(self.df_tasks_db, possible_workers[0].name, subject, task,
                                                     Constants.UNIQUE,
                                                     i)
@@ -109,8 +102,4 @@ class WorkerInfo:
                                         task.allotted_time, j)
                 j += 1
 
-                print(str(task.identifier) + ' ' + task.name + Constants.IMPOSSIBLE)
-        print("aaaa",self.df_tasks_db)
-        self.df_tasks_db.to_csv(
-            r"C:\Users\Yael Hadad\PycharmProjects\FinalProject\code_for_project\Tests\Test1\proc_tasks11.csv",
-            index=False)
+
