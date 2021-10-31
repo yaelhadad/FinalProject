@@ -1,0 +1,13 @@
+html, body {
+    height: 80%;
+}
+
+html {
+    display: table;
+    margin:0 auto;
+}
+
+body {
+    display: table-cell;
+    vertical-align: middle;
+}
