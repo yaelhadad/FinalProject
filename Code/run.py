@@ -14,7 +14,7 @@ from io import TextIOWrapper
 import sys, traceback
 import csv
 from constants import Constants
-from csv_files import  csv_upload
+from csv_files import csv_upload
 
 import email_validator
 
@@ -33,6 +33,7 @@ all_workers_names = []
 all_workers_get_task_names = {}
 manager_projects = {}
 user_roles = {}
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -86,7 +87,6 @@ class Assigned(db.Model):
     Project = db.Column(db.String)
 
 
-
 class Impossible(db.Model):
     __tablename__ = 'impossible'
 
@@ -109,6 +109,7 @@ class RegisterForm(FlaskForm):
     role = SelectField('role', validators=[DataRequired()], choices=[('manager', 'manager'), ('member', 'member')])
     password = PasswordField('password', validators=[InputRequired(), Length(min=4, max=8)])
 
+
 def is_user_has_project(name, project):
     all_members = db.session.query(Assigned).filter_by(Name="%s" % name, Project=project)
     if all_members.count() <= 1:
@@ -116,12 +117,13 @@ def is_user_has_project(name, project):
     else:
         return True
 
-def get_assigned_tasks(name, project):
 
+def get_assigned_tasks(name, project):
     query = 'select Name, Description, Expertise, ID, Allotted_time, Status from assigned WHERE Name ="%s" ' \
             'AND Project = "%s"' % (name, project)
     engine = sqlalchemy.create_engine('sqlite:///Task_Assigner.db')
     return pd.read_sql(query, engine)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -144,7 +146,8 @@ def signup():
     user_roles[form.username.data] = form.role.data
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
-        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password,role=form.role.data)
+        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password,
+                        role=form.role.data)
         db.session.add(new_user)
         db.session.commit()
 
@@ -163,15 +166,16 @@ def login():
         if check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
 
-            if User.query.filter_by(username=form.username.data).first().role== "manager":
+            if User.query.filter_by(username=form.username.data).first().role == "manager":
                 return redirect(url_for('upload_csv_files'))
             else:
                 if is_user_has_project(form.username.data, form.project.data):
                     assigned_tasks_for_member = get_assigned_tasks(form.username.data, form.project.data)
-                    #edirect(url_for('view_tasks_for_worker(%s)' % user))
+                    # edirect(url_for('view_tasks_for_worker(%s)' % user))
                     return render_template("view.html",
-                               data=assigned_tasks_for_member.to_html(index=False, classes="table table-striped"),
-                               title="Assigned task for worker")
+                                           data=assigned_tasks_for_member.to_html(index=False,
+                                                                                  classes="table table-striped"),
+                                           title="Assigned task for worker")
                 else:
                     return '<h1> User has no tasks'
     return render_template('login.html', form=form)
@@ -192,16 +196,18 @@ def welcome():
 @app.route('/upload_csv_files', methods=['GET', 'POST'])
 @login_required
 def upload_csv_files():
-
     manager = list(manager_projects)[-1]
     project = manager_projects[manager]
-    if db.session.query(Assigned).filter_by(Manager="%s" % manager, Project="%s" % project).count() >= 1 :
+    if db.session.query(Assigned).filter_by(Manager="%s" % manager, Project="%s" % project).count() >= 1:
         msg = "Note: The project '%s' exists, Notice that if you upload files you will overwrite the old files." % project
     else:
         msg = "Note: The project '%s' is a  new project, Upload your files" % project
     if request.method == 'POST':
-        csv_upload(Tasks, Workers, manager_projects, db, manager, project)
-        return redirect(url_for('upload_csv_files'))
+        try:
+            csv_upload(Tasks, Workers, manager_projects, db, manager, project)
+            return redirect(url_for('upload_csv_files'))
+        except:
+            return '<h1> Invalid file, load csv file in the format that is displayed in the tutorial'
 
     return render_template("upload_csv_files.html", msg=msg)
 
@@ -213,11 +219,10 @@ def view_tasks():
     project = manager_projects[user]
     df = pd.read_sql(
         'select ID_Task, Status, Description, Subject, Assignee, Allotted_time, Review_Time  from tasks WHERE Manager = "%s" AND Project = "%s"' % (
-        user, project), engine)
+            user, project), engine)
     return render_template("view.html",
-                          data=df.to_html(index=False, classes="table table-striped"),
-                         title="Tasks table")
-
+                           data=df.to_html(index=False, classes="table table-striped"),
+                           title="Tasks table")
 
 
 @app.route('/view_workers')
@@ -228,7 +233,7 @@ def view_workers():
     df = pd.read_sql(
         'select Name, Total_hours, Total_hours_at_begin,Expertise from workers WHERE Manager = "%s" AND Project = "%s"' % (
             user, project), engine)
-    #df = pd.read_sql('select Name,Role,Total_hours, Total_hours_at_begin,Expertise from workers ', engine)
+    # df = pd.read_sql('select Name,Role,Total_hours, Total_hours_at_begin,Expertise from workers ', engine)
     return render_template("view.html",
                            data=df.to_html(index=False, classes="table table-striped"),
                            title="Workers table")
@@ -259,7 +264,9 @@ def tasks_assigned():
         # budget_all_workers = db.session.query(Workers.Budget).all()
         workers_get_tasks = db.session.query(Assigned).filter_by(Manager="%s" % manager, Project="%s" % project)
         for worker in workers_get_tasks:
-            all_workers_get_task_names[worker.Name] = db.session.query(Assigned).filter_by(Name=worker.Name,Manager="%s" % manager, Project="%s" % project)
+            all_workers_get_task_names[worker.Name] = db.session.query(Assigned).filter_by(Name=worker.Name,
+                                                                                           Manager="%s" % manager,
+                                                                                           Project="%s" % project)
             count_tasks_for_each_worker[worker.Name] = all_workers_get_task_names[worker.Name].count()
         tasks_number = db.session.query(Tasks).filter_by(Manager="%s" % manager, Project="%s" % project).count()
         are_any_impossible = db.session.query(Impossible).first()
@@ -269,7 +276,7 @@ def tasks_assigned():
             impossible_tasks = [task_impos.ID for task_impos in db.session.query(Impossible).all()]
             impossible = db.session.query(Impossible).all
             assigned_tasks_sum = str(tasks_number - count_impossible_tasks)
-            if count_impossible_tasks >1:
+            if count_impossible_tasks > 1:
                 msg1 = "%s tasks are impossible:  %s" % (count_impossible_tasks, str(impossible_tasks))
             else:
                 msg1 = "%s task is impossible:  %s" % (count_impossible_tasks, str(impossible_tasks))
@@ -279,7 +286,8 @@ def tasks_assigned():
             msg1 = "All the tasks were assigned successfully!"
             msg2 = "Good Luck!"
         return render_template('tasks_assigned.html', data=all_workers, tasks_number=tasks_number,
-                               msg1=msg1, msg2=msg2, count=count_tasks_for_each_worker, budget=budget_all_workers, impossible=impossible)
+                               msg1=msg1, msg2=msg2, count=count_tasks_for_each_worker, budget=budget_all_workers,
+                               impossible=impossible)
     except Exception:
         print("Exception in user code:")
         traceback.print_exc(file=sys.stdout)
@@ -293,7 +301,7 @@ def view_tasks_for_worker(WorkerName):
         df = pd.DataFrame()
         df = pd.read_sql(value.statement, db.session.bind)
         df = df.drop([Constants.IS_UNIQUE, Constants.BUDGET_UNIQUE, Constants.ALREADY_ASSIGNED, Constants.IS_ASSIGNED,
-                      "Manager", "Project","index"], axis=1)
+                      "Manager", "Project", "index"], axis=1)
         workers_tasks[name] = df
     if WorkerName not in all_workers_get_task_names.keys():
         return 'Worker did not get tasks'
