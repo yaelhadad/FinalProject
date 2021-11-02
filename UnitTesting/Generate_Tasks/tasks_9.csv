@@ -1,10 +1,10 @@
 ID_Task,Status,Description,Subject,Assignee,Queue,Allotted_time,Review_Time
-5638,New,AteGen -uflex,ATEGEN,,0.1,6.5,0.5
-5645,New,smt8vt : scan,GENERAL,,0.1,6,0.5
-5647,New,smt8vt :loops,GENERAL,,0.15,2,0.5
-5648,New,smt8vt : comments,GENERAL,,0.15,2,0.5
-5640,New,smt8vt : PA [Front End],ATEGEN,,0.1,6,0.5
-5642,New,smt8vt : PA [Backend],GENERAL,,0.15,2,0.5
-5632,New,AteGen - subr comments generated incorrectly,ATEGEN,,0.01,1.5,0.5
-5631,New,AteGen - subr,CONVMGR,,0.001,1.5,0.5
-2000,New,AteGen - subr2,CONVMGR,,8,1.5,0.5
+5638,New,Arrange the room,A,,0.1,6.5,0.5
+5645,New,General task,G,,0.1,6,0.5
+5647,New,General task2,G,,0.15,2,0.5
+5648,New,General task3,G,,0.15,2,0.5
+5640,New,Arrange the room2,A,,0.1,6,0.5
+5642,New,General task4,G,,0.15,2,0.5
+5632,New,Arrange the room3,A,,0.01,1.5,0.5
+5631,New,Clean,C,,0.001,1.5,0.5
+2000,New,Clean2,C,,8,1.5,0.5
