@@ -1,4 +1,4 @@
-from flask import Flask, g, render_template, redirect, url_for, request, flash
+from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap
 from sqlalchemy import CheckConstraint
 from wtforms import StringField, PasswordField, BooleanField, SelectField
@@ -10,12 +10,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import sqlalchemy
 import pandas as pd
-from io import TextIOWrapper
-import sys, traceback
-import csv
+import sys,traceback
 from constants import Constants
 from csv_files import csv_upload
-
 import email_validator
 
 app = Flask(__name__)
