@@ -1,5 +1,5 @@
 Name,Expertise,Task,Description,ID,Allotted_time,Is_the_task_Unique,Total_time_for_less_important_unique_tasks,Already_assigned_by,Status,Is_already_assigned
-Yael Hadad,ATEGEN,A1,AteGen -uflex,5638,7.00,FALSE,0.00,,New,FALSE
-Elad Motzny,ATEGEN,A1,AteGen -uflex,5638,7.00,FALSE,0.00,,New,FALSE
-Maayan Lavi,ATEGEN,A1,AteGen -uflex,5638,7.00,FALSE,0.00,,New,FALSE
-Chanel Michaeli,ATEGEN,A1,AteGen -uflex,5638,7.00,FALSE,0.00,,New,FALSE
+Yael ,A,A1,Arrange the room,5638,7.0,False,0.0,,New,False
+Elad,A,A1,Arrange the room,5638,7.0,False,0.0,,New,False
+Maayan,A,A1,Arrange the room,5638,7.0,False,0.0,,New,False
+Chanel ,A,A1,Arrange the room,5638,7.0,False,0.0,,New,False
