@@ -10,20 +10,14 @@ from pandas.testing import assert_frame_equal
 
 class TestValidWorkersFile(unittest.TestCase):
 
+    def test_1_task_workers_can_not_do_it_time(self):
+        tasks = GenerateTask(
+            pd.read_csv(f"{Constants.root_dir}/{Constants.generate_tasks}/{Constants.task_1_impossible_hours}"))
+        impossible_tasks = WorkerInfo(pd.read_csv(f"{Constants.root_dir}/{Constants.worker_info}/{Constants.work_table_all}"),
+                               tasks.all_tasks)
+        df = pd.read_csv(f"{Constants.root_dir}/{Constants.worker_info_gold}/{Constants.impossible_task }")
+        assert_frame_equal(df, impossible_tasks.all_impossible_tasks)
 
-    def test_empty_table(self):
-        workers_file = ValidWorkersFile(
-            pd.read_csv(f"{Constants.root_dir}/{Constants.valid_workers_info}/{Constants.workers_empty}"))
-        with self.assertRaises(ValueError):
-            workers_file.valid_values()
-
-
-class TestValidTasksFile(unittest.TestCase):
-    def test_empty_table(self):
-        tasks = ValidTasksFile(
-            pd.read_csv(f"{Constants.root_dir}/{Constants.valid_tasks}/{Constants.tasks_empty}"))
-        with self.assertRaises(ValueError):
-            tasks.valid_values()
 
 
 class TestGenerateTask(unittest.TestCase):
