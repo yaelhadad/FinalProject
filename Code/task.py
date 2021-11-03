@@ -1,8 +1,7 @@
 class Task:
 
-    def __init__(self, name,identifier,subject, description, allotted_time, assignee, priority, status,
+    def __init__(self, name, identifier, subject, description, allotted_time, assignee, priority, status,
                  general_location, location_in_queue, already_assigned):
-
         self.name = name
         self.identifier = identifier
         self.subject = subject
@@ -18,4 +17,3 @@ class Task:
     def set_task(self, status, assignee):
         self.status = status
         self.assignee = assignee
-

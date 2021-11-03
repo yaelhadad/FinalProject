@@ -13,11 +13,11 @@ class TestValidWorkersFile(unittest.TestCase):
     def test_1_task_workers_can_not_do_it_time(self):
         tasks = GenerateTask(
             pd.read_csv(f"{Constants.root_dir}/{Constants.generate_tasks}/{Constants.task_1_impossible_hours}"))
-        impossible_tasks = WorkerInfo(pd.read_csv(f"{Constants.root_dir}/{Constants.worker_info}/{Constants.work_table_all}"),
-                               tasks.all_tasks)
-        df = pd.read_csv(f"{Constants.root_dir}/{Constants.worker_info_gold}/{Constants.impossible_task }")
+        impossible_tasks = WorkerInfo(
+            pd.read_csv(f"{Constants.root_dir}/{Constants.worker_info}/{Constants.work_table_all}"),
+            tasks.all_tasks)
+        df = pd.read_csv(f"{Constants.root_dir}/{Constants.worker_info_gold}/{Constants.impossible_task}")
         assert_frame_equal(df, impossible_tasks.all_impossible_tasks)
-
 
 
 class TestGenerateTask(unittest.TestCase):
@@ -87,9 +87,10 @@ class TestWorkerInfo(unittest.TestCase):
     def test_1_task_workers_can_not_do_it_time(self):
         tasks = GenerateTask(
             pd.read_csv(f"{Constants.root_dir}/{Constants.generate_tasks}/{Constants.task_1_impossible_hours}"))
-        impossible_tasks = WorkerInfo(pd.read_csv(f"{Constants.root_dir}/{Constants.worker_info}/{Constants.work_table_all}"),
-                               tasks.all_tasks)
-        df = pd.read_csv(f"{Constants.root_dir}/{Constants.worker_info_gold}/{Constants.impossible_task }")
+        impossible_tasks = WorkerInfo(
+            pd.read_csv(f"{Constants.root_dir}/{Constants.worker_info}/{Constants.work_table_all}"),
+            tasks.all_tasks)
+        df = pd.read_csv(f"{Constants.root_dir}/{Constants.worker_info_gold}/{Constants.impossible_task}")
         assert_frame_equal(df, impossible_tasks.all_impossible_tasks)
 
     # def test_1_task_workers_can_not_do_it_expertise(self):
@@ -100,9 +101,9 @@ class TestWorkerInfo(unittest.TestCase):
     #             pd.read_csv(f"{Constants.root_dir}/{Constants.worker_info}/{Constants.work_table_all}"),
     #             tasks.all_tasks)
 
+
 # class TestAssigned(unittest.TestCase):
 #     def test_heartbeat_already_assigned(self):
-
 
 
 if __name__ == '__main__':

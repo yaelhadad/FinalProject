@@ -20,11 +20,9 @@ def create_db_possible_tasks():
 
 
 def update_initial_information_db_table(db, name, subject, task, is_unique, i):
-
     new_info = [name, subject, task.name, task.description, task.identifier, task.allotted_time, is_unique, 0,
-                task.assignee, task.status,task.already_assigned]
+                task.assignee, task.status, task.already_assigned]
     db.loc[i] = new_info
-
 
 
 def create_db_impossible_tasks():
@@ -38,6 +36,7 @@ def create_db_impossible_tasks():
 def update_impossible_tasks(db, id, subject, description, allotted_time):
     new_info = [id, subject, description, allotted_time]
     db.loc[len(db)] = new_info
+
 
 class WorkerInfo:
 
@@ -100,6 +99,5 @@ class WorkerInfo:
 
             if len(possible_workers) == Constants.ZERO:
                 self.update_initial_impossible_tasks(task.identifier, task.subject, task.description,
-                                        task.allotted_time, j)
+                                                     task.allotted_time, j)
                 j += 1
-

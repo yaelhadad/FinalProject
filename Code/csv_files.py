@@ -1,12 +1,34 @@
 from flask import request
 from io import TextIOWrapper
 import csv
-import sys
 
 
-class ThreatStackError(Exception):
-    def rin(self):
-        return '<h1> Invalid format'
+def project_io_status(File, db, manager, project, Tasks, Workers, Assigned, ):
+    if db.session.query(File).filter_by(Manager="%s" % manager, Project="%s" % project).count() >= 1:
+        is_empty = False
+    else:
+        is_empty = True
+
+    if File == Tasks:
+        if not is_empty:
+            is_task_file_exists = True
+        else:
+            is_task_file_exists = False
+        return is_task_file_exists
+
+    if File == Workers:
+        if not is_empty:
+            is_workers_file_exists = True
+        else:
+            is_workers_file_exists = False
+        return is_workers_file_exists
+
+    if File == Assigned:
+        if not is_empty:
+            msg = "Note: The project '%s' exists Notice that if you upload files you will overwrite the old files." % project
+        else:
+            msg = "Note: The project '%s' is a  new project, Tasks ere not assigned yet" % project
+        return msg
 
 
 def csv_upload(Tasks, Workers, user_projects, db, manager, project):

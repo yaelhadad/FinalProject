@@ -3,6 +3,8 @@ from processing_workers_info import update_impossible_tasks, create_db_impossibl
 from constants import Constants
 import pandas as pd
 from jinja2 import Template
+
+
 def assign_task(task, worker):
     task.set_task(Constants.ASSIGNED, worker.name)
     worker.update_assigned_task(task)
@@ -46,8 +48,8 @@ class Assign:
 
         if df_possible_workers.empty:
             if self.all_impossible_tasks.empty:
-                self.all_impossible_tasks=create_db_impossible_tasks()
-            update_impossible_tasks(self.all_impossible_tasks,int(task.identifier),task.subject, task.description,
+                self.all_impossible_tasks = create_db_impossible_tasks()
+            update_impossible_tasks(self.all_impossible_tasks, int(task.identifier), task.subject, task.description,
                                     float(task.allotted_time))
 
             self.config_file = self.config_file[self.config_file.ID != task.identifier]
@@ -60,8 +62,10 @@ class Assign:
         df_min_budget = df_possible_workers.sort_values(by=[Constants.BUDGET_UNIQUE])
         # Case that there is only one worker with the most minimal budget
         # print(task.name)
-        if df_min_budget.iloc[Constants.FIRST][Constants.BUDGET_UNIQUE] != df_min_budget.iloc[Constants.SECOND][Constants.BUDGET_UNIQUE]:
-            assign_task(task, self.all_workers[df_min_budget.head(Constants.ONLY_ONE).iloc[Constants.ONE_AND_LAST][Constants.NAME]])
+        if df_min_budget.iloc[Constants.FIRST][Constants.BUDGET_UNIQUE] != df_min_budget.iloc[Constants.SECOND][
+            Constants.BUDGET_UNIQUE]:
+            assign_task(task, self.all_workers[
+                df_min_budget.head(Constants.ONLY_ONE).iloc[Constants.ONE_AND_LAST][Constants.NAME]])
             self.update_workers(df_possible_workers.index, df_min_budget.head(Constants.ONLY_ONE).index)
             return
         else:
@@ -70,7 +74,6 @@ class Assign:
             worker, index_drop = self.find_worker_with_max_availability(df_min_budget)
             assign_task(task, self.all_workers[worker])
             self.remove_needless_optional_workers(index_drop)
-
 
     def run(self):
 

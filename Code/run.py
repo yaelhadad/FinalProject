@@ -11,7 +11,7 @@ import sqlalchemy
 import pandas as pd
 import sys, traceback
 from constants import Constants
-from csv_files import csv_upload
+from csv_files import csv_upload, project_io_status
 import email_validator
 
 app = Flask(__name__)
@@ -197,23 +197,9 @@ def welcome():
 def upload_csv_files():
     manager = list(manager_projects)[-1]
     project = manager_projects[manager]
-    if db.session.query(Tasks).filter_by(Manager="%s" % manager, Project="%s" % project).count() >= 1:
-        is_task_file_exists = True
-    else:
-        is_task_file_exists = False
-
-    if db.session.query(Workers).filter_by(Manager="%s" % manager, Project="%s" % project).count() >= 1:
-        is_workers_file_exists = True
-    else:
-        is_workers_file_exists = False
-
-    if db.session.query(Assigned).filter_by(Manager="%s" % manager, Project="%s" % project).count() >= 1:
-        is_project_exists = True
-        msg = "Note: The project '%s' exists Notice that if you upload files you will overwrite the old files." % project
-    else:
-        is_project_exists = False
-        msg = "Note: The project '%s' is a  new project, Upload your files" % project
-
+    is_task_file_exists = project_io_status(Tasks, db, manager, project, Tasks, Workers, Assigned)
+    is_workers_file_exists = project_io_status(Workers, db, manager, project, Tasks, Workers, Assigned)
+    msg = project_io_status(Assigned, db, manager, project, Tasks, Workers, Assigned)
     if request.method == 'POST':
         try:
             csv_upload(Tasks, Workers, manager_projects, db, manager, project)
@@ -231,7 +217,8 @@ def view_tasks():
     user = list(manager_projects)[-1]
     project = manager_projects[user]
     df = pd.read_sql(
-        'select ID_Task, Status, Description, Subject, Assignee, Allotted_time, Review_Time  from tasks WHERE Manager = "%s" AND Project = "%s"' % (
+        'select ID_Task, Status, Description, Subject, Assignee, Queue, Allotted_time, Review_Time  '
+        'from tasks WHERE Manager = "%s" AND Project = "%s"' % (
             user, project), engine)
     return render_template("view.html",
                            data=df.to_html(index=False, classes="table table-striped"),
@@ -244,7 +231,8 @@ def view_workers():
     user = list(manager_projects)[-1]
     project = manager_projects[user]
     df = pd.read_sql(
-        'select Name, Total_hours, Total_hours_at_begin,Expertise from workers WHERE Manager = "%s" AND Project = "%s"' % (
+        'select Name, Total_hours, Total_hours_at_begin,Expertise from workers WHERE Manager = "%s" '
+        'AND Project = "%s"' % (
             user, project), engine)
     return render_template("view.html",
                            data=df.to_html(index=False, classes="table table-striped"),
@@ -266,14 +254,11 @@ def assign():
 @app.route('/tasks_assigned', methods=['GET', 'POST'])
 def tasks_assigned():
     try:
-
         count_tasks_for_each_worker = {}
         manager = list(manager_projects)[-1]
         project = manager_projects[manager]
         all_workers = db.session.query(Workers.Name).filter_by(Manager="%s" % manager, Project="%s" % project)
         budget_all_workers = db.session.query(Workers.Budget).filter_by(Manager="%s" % manager, Project="%s" % project)
-        # all_workers = db.session.query(Workers.Name).all()
-        # budget_all_workers = db.session.query(Workers.Budget).all()
         workers_get_tasks = db.session.query(Assigned).filter_by(Manager="%s" % manager, Project="%s" % project)
         for worker in workers_get_tasks:
             all_workers_get_task_names[worker.Name] = db.session.query(Assigned).filter_by(Name=worker.Name,
@@ -301,8 +286,7 @@ def tasks_assigned():
                                msg1=msg1, msg2=msg2, count=count_tasks_for_each_worker, budget=budget_all_workers,
                                impossible=impossible)
     except Exception:
-        print("Exception in user code:")
-        traceback.print_exc(file=sys.stdout)
+        return '<h1> Assigning failed'
     return redirect('upload_csv_files')
 
 
@@ -316,7 +300,7 @@ def view_tasks_for_worker(WorkerName):
                       "Manager", "Project", "index"], axis=1)
         workers_tasks[name] = df
     if WorkerName not in all_workers_get_task_names.keys():
-        return 'Worker did not get tasks'
+        return '<h1> Worker did not get tasks'
     else:
         return render_template("view.html",
                                data=workers_tasks[WorkerName].to_html(index=False, classes="table table-striped"),

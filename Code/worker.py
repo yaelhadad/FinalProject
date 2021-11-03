@@ -1,4 +1,3 @@
-
 class Worker:
 
     def __init__(self, name, role, password, expertise, availability, availability_start_sprint, count_current_hours,
@@ -17,8 +16,8 @@ class Worker:
     def update_assigned_task(self, task):
         if task.priority == 'A':
             self.availability_start_sprint = self.availability_start_sprint - task.allotted_time
-        self.availability = self.availability- task.allotted_time
-        self.count_current_hours = self.count_current_hours+ task.allotted_time
+        self.availability = self.availability - task.allotted_time
+        self.count_current_hours = self.count_current_hours + task.allotted_time
         self.current_tasks.append(task.identifier)
 
     def verify_optional_task_before_assign(self, task, budget):
@@ -46,5 +45,3 @@ class Worker:
         if optional_availability < 0:
             return False
         return True
-
-

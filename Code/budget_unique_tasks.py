@@ -18,5 +18,3 @@ class BudgetUnique:
                     count_budget = count_budget + float(row.loc[Constants.ALLOTTED_TIME])
                 else:
                     self.config_file.at[idx, Constants.BUDGET_UNIQUE] = str(count_budget)
-
-

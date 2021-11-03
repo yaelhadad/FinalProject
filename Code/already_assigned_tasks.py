@@ -21,9 +21,12 @@ class AlreadyAssigned:
         if is_already_assigned:
             already_assigned_tasks = self.config_file[self.config_file[Constants.IS_ASSIGNED]]
             already_assigned_tasks[Constants.IS_ASSIGNED_UNIQUE] = np.where(already_assigned_tasks[Constants.NAME] ==
-                                                                            already_assigned_tasks[Constants.ALREADY_ASSIGNED], True, False)
+                                                                            already_assigned_tasks[
+                                                                                Constants.ALREADY_ASSIGNED], True,
+                                                                            False)
             initial_assigned = already_assigned_tasks.loc[(already_assigned_tasks[Constants.IS_UNIQUE] == False) &
-                                                  (already_assigned_tasks[Constants.IS_ASSIGNED_UNIQUE] == True)].index.values
+                                                          (already_assigned_tasks[
+                                                               Constants.IS_ASSIGNED_UNIQUE] == True)].index.values
             for row in initial_assigned:
                 already_assigned_tasks.at[row, Constants.IS_UNIQUE] = True
                 task_to_be_updated = (already_assigned_tasks.loc[row, Constants.TASK])

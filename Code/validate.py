@@ -8,15 +8,15 @@ sys.tracebacklimit = 0
 
 class Valid:
     EMPTY_ERROR_MESSAGE = "Input table is empty"
+
     def __init__(self, csv_file):
         self.df = pd.read_csv(csv_file)
 
-        print("aa")
 
     def is_empty(self):
         print(self.df)
         if self.df.empty:
-          raise ValueError(self.EMPTY_ERROR_MESSAGE)
+            raise ValueError(self.EMPTY_ERROR_MESSAGE)
 
 
 class ValidWorkersFile(Valid):
@@ -30,7 +30,6 @@ class ValidWorkersFile(Valid):
         if self.df[Constants.TOTAL_START].str.isdigit().all():
             raise ValueError("Total hours are invalid")
 
-
         # if float(row.loc[TOTAL_HOURS]) < float(row.loc[TOTAL_HOURS_START]):
 
 
@@ -41,5 +40,3 @@ class ValidTasksFile(Valid):
 
 class ValidPosTasks(ValidTasksFile):
     EMPTY_ERROR_MESSAGE = "All the tasks are impossible for the workers"
-
-
