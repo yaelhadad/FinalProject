@@ -171,7 +171,6 @@ def login():
             else:
                 if is_user_has_project(form.username.data, form.project.data):
                     assigned_tasks_for_member = get_assigned_tasks(form.username.data, form.project.data)
-                    # edirect(url_for('view_tasks_for_worker(%s)' % user))
                     return render_template("view.html",
                                            data=assigned_tasks_for_member.to_html(index=False,
                                                                                   classes="table table-striped"),
@@ -198,12 +197,23 @@ def welcome():
 def upload_csv_files():
     manager = list(manager_projects)[-1]
     project = manager_projects[manager]
+    if db.session.query(Tasks).filter_by(Manager="%s" % manager, Project="%s" % project).count() >= 1:
+        is_task_file_exists = True
+    else:
+        is_task_file_exists = False
+
+    if db.session.query(Workers).filter_by(Manager="%s" % manager, Project="%s" % project).count() >= 1:
+        is_workers_file_exists = True
+    else:
+        is_workers_file_exists = False
+
     if db.session.query(Assigned).filter_by(Manager="%s" % manager, Project="%s" % project).count() >= 1:
         is_project_exists = True
         msg = "Note: The project '%s' exists Notice that if you upload files you will overwrite the old files." % project
     else:
         is_project_exists = False
-        msg = "Note: The project '%s' is a  new project,\n Upload your files" % project
+        msg = "Note: The project '%s' is a  new project, Upload your files" % project
+
     if request.method == 'POST':
         try:
             csv_upload(Tasks, Workers, manager_projects, db, manager, project)
@@ -211,7 +221,8 @@ def upload_csv_files():
         except:
             return '<h1> Invalid file, load csv file in the format that is displayed in the tutorial'
 
-    return render_template("upload_csv_files.html", msg=msg, is_project=is_project_exists)
+    return render_template("upload_csv_files.html", msg=msg, is_task_file_exists=is_task_file_exists,
+                           is_workers_file_exists=is_workers_file_exists)
 
 
 @app.route('/view_tasks')
@@ -235,7 +246,6 @@ def view_workers():
     df = pd.read_sql(
         'select Name, Total_hours, Total_hours_at_begin,Expertise from workers WHERE Manager = "%s" AND Project = "%s"' % (
             user, project), engine)
-    # df = pd.read_sql('select Name,Role,Total_hours, Total_hours_at_begin,Expertise from workers ', engine)
     return render_template("view.html",
                            data=df.to_html(index=False, classes="table table-striped"),
                            title="Workers table")

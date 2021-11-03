@@ -18,14 +18,15 @@
                  <div class="form-group">
                     <label>Upload Tasks File</label>
                     <input type="file" class="form-control" name="upload_tasks" value ="upload_tasks"
-                           style="{{'color: rgba(0, 0, 0, 0);' if is_project else ''}}">
+                           style="{{'color: rgba(0, 0, 0, 0);' if is_task_file_exists else ''}}">
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Upload tasks File" class="btn btn-primary btn-block" style="background-color:orange">
                 </div>
                 <div class="form-group">
                     <label>Upload Workers File</label>
-                    <input type="file" class="form-control" name="upload_workers" value ="upload_workers"  >
+                    <input type="file" class="form-control" name="upload_workers" value ="upload_workers"
+                            style="{{'color: rgba(0, 0, 0, 0);' if is_workers_file_exists else ''}}">
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Upload workers File" class="btn btn-primary btn-block" style="background-color:orange">
@@ -46,13 +47,15 @@
                       <tbody>
                         <tr>
                             <td>Tasks</td>
-                            <td><a href="{{url_for('view_tasks')}}" class="btn btn-primary btn-block" style="background-color:orange"></a></td>
+                            <td><a href="{{url_for('view_tasks')}}" class="btn btn-primary btn-block"
+                                   style="{{'background-color:green' if is_task_file_exists else 'background-color:orange'}}"></a></td>
 
 
                         </tr>
                        <tr>
                             <td>Workers</td>
-                            <td><a href="{{url_for('view_workers')}}" class="btn btn-primary btn-block" style="background-color:orange"></a></td>
+                            <td><a href="{{url_for('view_workers')}}" class="btn btn-primary btn-block"
+                                   style="{{'background-color:green' if is_workers_file_exists else 'background-color:orange'}}"></a></td>
 
                         </tr>
                     </tbody>
