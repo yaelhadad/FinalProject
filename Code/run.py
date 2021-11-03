@@ -9,7 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import sqlalchemy
 import pandas as pd
-import sys,traceback
+import sys, traceback
 from constants import Constants
 from csv_files import csv_upload
 import email_validator
@@ -144,8 +144,12 @@ def signup():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
         new_user = User(username=form.username.data, email=form.email.data, password=hashed_password,
                         role=form.role.data)
-        db.session.add(new_user)
-        db.session.commit()
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            return '<h1> Failed to signup'
 
         return render_template('welcome.html', user=form.username.data)
 
@@ -195,9 +199,11 @@ def upload_csv_files():
     manager = list(manager_projects)[-1]
     project = manager_projects[manager]
     if db.session.query(Assigned).filter_by(Manager="%s" % manager, Project="%s" % project).count() >= 1:
-        msg = "Note: The project '%s' exists, Notice that if you upload files you will overwrite the old files." % project
+        is_project_exists = True
+        msg = "Note: The project '%s' exists Notice that if you upload files you will overwrite the old files." % project
     else:
-        msg = "Note: The project '%s' is a  new project, Upload your files" % project
+        is_project_exists = False
+        msg = "Note: The project '%s' is a  new project,\n Upload your files" % project
     if request.method == 'POST':
         try:
             csv_upload(Tasks, Workers, manager_projects, db, manager, project)
@@ -205,7 +211,7 @@ def upload_csv_files():
         except:
             return '<h1> Invalid file, load csv file in the format that is displayed in the tutorial'
 
-    return render_template("upload_csv_files.html", msg=msg)
+    return render_template("upload_csv_files.html", msg=msg, is_project=is_project_exists)
 
 
 @app.route('/view_tasks')

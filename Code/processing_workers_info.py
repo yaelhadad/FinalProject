@@ -103,4 +103,3 @@ class WorkerInfo:
                                         task.allotted_time, j)
                 j += 1
 
-

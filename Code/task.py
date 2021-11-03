@@ -15,9 +15,6 @@ class Task:
         self.status = status
         self.already_assigned = already_assigned
 
-    def get_status(self):
-        return self.status
-
     def set_task(self, status, assignee):
         self.status = status
         self.assignee = assignee
