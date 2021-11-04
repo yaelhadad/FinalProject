@@ -3,6 +3,8 @@ class Constants:
     TOTAL_HOURS = 'Total_hours'
     TOTAL_HOURS_START = 'Total_hours_at_begin'
     NAME = 'Name'
+    MANAGER = 'Manager'
+    PROJECT = 'Project'
     TOTAL = 'Total_hours'
     TOTAL_START = 'Total_hours_at_begin'
     TASK = 'Task'

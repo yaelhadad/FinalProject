@@ -1,11 +1,10 @@
 import pandas as pd
 from worker import Worker
 from constants import Constants
-from validate import Valid, ValidPosTasks
 
 
-def create_db_possible_tasks():
-    db = pd.DataFrame({Constants.NAME: pd.Series(dtype='str'),
+def create_table_possible_tasks():
+    table = pd.DataFrame({Constants.NAME: pd.Series(dtype='str'),
                        Constants.EXPERTISE: pd.Series(dtype='str'),
                        Constants.TASK: pd.Series(dtype='str'),
                        Constants.DESCRIPTION: pd.Series(dtype='str'),
@@ -16,26 +15,26 @@ def create_db_possible_tasks():
                        Constants.ALREADY_ASSIGNED: pd.Series(dtype='str'),
                        Constants.STATUS: pd.Series(dtype='str'),
                        Constants.IS_ASSIGNED: pd.Series(dtype='bool')})
-    return db
+    return table
 
 
-def update_initial_information_db_table(db, name, subject, task, is_unique, i):
+def update_initial_information_db_table(table, name, subject, task, is_unique, i):
     new_info = [name, subject, task.name, task.description, task.identifier, task.allotted_time, is_unique, 0,
                 task.assignee, task.status, task.already_assigned]
-    db.loc[i] = new_info
+    table.loc[i] = new_info
 
 
-def create_db_impossible_tasks():
-    db = pd.DataFrame({Constants.IDENTIFIER: pd.Series(dtype='int'),
+def create_table_impossible_tasks():
+    table = pd.DataFrame({Constants.IDENTIFIER: pd.Series(dtype='int'),
                        Constants.SUBJECT: pd.Series(dtype='str'),
                        Constants.DESCRIPTION: pd.Series(dtype='str'),
                        Constants.ALLOTTED_TIME: pd.Series(dtype='float')})
-    return db
+    return table
 
 
-def update_impossible_tasks(db, id, subject, description, allotted_time):
+def update_impossible_tasks(table, id, subject, description, allotted_time):
     new_info = [id, subject, description, allotted_time]
-    db.loc[len(db)] = new_info
+    table.loc[len(table)] = new_info
 
 
 class WorkerInfo:
@@ -45,7 +44,7 @@ class WorkerInfo:
         self.all_tasks = all_tasks
         self.all_workers = {}
         self.all_impossible_tasks = pd.DataFrame()
-        self.df_tasks_db = None
+        self.all_possible_tasks = None
         self.run()
 
     def set_worker(self, worker_info):
@@ -75,29 +74,31 @@ class WorkerInfo:
 
     def run(self):
         self.set_all_workers()
-        self.df_tasks_db = create_db_possible_tasks()
+        self.all_possible_tasks = create_table_possible_tasks()
         ## index for possible tasks
         i = 0
         ## index for impossible tasks
         j = 0
+        # Each task has a list for all the possible workers
         possible_workers = []
-        self.all_impossible_tasks = create_db_impossible_tasks()
+        self.all_impossible_tasks = create_table_impossible_tasks()
         for task in self.all_tasks.values():
             subject = task.subject
             possible_workers = self.who_can_do_it(task)
+            # Write one row in the possible table in case that the task is unique for 1 worker
             if len(possible_workers) == Constants.ONE:
-                update_initial_information_db_table(self.df_tasks_db, possible_workers[0].name, subject, task,
+                update_initial_information_db_table(self.all_possible_tasks, possible_workers[0].name, subject, task,
                                                     Constants.UNIQUE,
                                                     i)
                 i += 1
-
-            if len(possible_workers) > Constants.ONE:
+            # The number of rows in the possible table is set according to the number of workers that can do it
+            elif len(possible_workers) > Constants.ONE:
                 for pos_worker in possible_workers:
-                    update_initial_information_db_table(self.df_tasks_db, pos_worker.name, subject, task,
+                    update_initial_information_db_table(self.all_possible_tasks, pos_worker.name, subject, task,
                                                         Constants.NOT_UNIQUE, i)
                     i += 1
-
-            if len(possible_workers) == Constants.ZERO:
+            # In case that no one can do the task, the task is impossible and it will be written in the impossible table
+            elif len(possible_workers) == Constants.ZERO:
                 self.update_initial_impossible_tasks(task.identifier, task.subject, task.description,
                                                      task.allotted_time, j)
                 j += 1

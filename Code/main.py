@@ -1,16 +1,17 @@
 import pandas as pd
+import argparse
+import sqlalchemy
+
 from run import db, Impossible, Assigned
 from generate_tasks import GenerateTask
 from processing_workers_info import WorkerInfo
 from already_assigned_tasks import AlreadyAssigned
 from budget_unique_tasks import BudgetUnique
 from assign_task import Assign
-import argparse
-import sqlalchemy
+from constants import Constants
 
-all_workers_info = {}
+
 budget_of_all = []
-
 
 def parse_args():
     parser = argparse.ArgumentParser(description='''Generate tasks for each user''')
@@ -24,8 +25,8 @@ def parse_args():
 
 
 def update_manager_and_project_assigned_tasks(assign_table, manager, project):
-    assign_table['Manager'] = manager
-    assign_table['Project'] = project
+    assign_table[Constants.MANAGER] = manager
+    assign_table[Constants.PROJECT] = project
     return assign_table
 
 
@@ -37,18 +38,16 @@ def main():
     tasks_table = pd.read_sql(
         'SELECT * FROM tasks WHERE Manager = "%s" AND Project = "%s"' % (args.manager, args.project), engine)
 
-    # TBD - Finish the validation
-    # ValidWorkersFile(workers_table).valid_values()
-    # ValidTasksFile(tasks_table).valid_values()
-    # from the tasks file, generate all_tasks and set priority
+    # Read the tasks file ans keep all the information for each task in separate class
+    # Sort the class ans set them unique priority, e.g A1, A2, A3
     tasks = GenerateTask(tasks_table)
     # From the configure file generate the "main task for worker" table
     processing_workers = WorkerInfo(workers_table, tasks.all_tasks)
     # Already assigned
-    already_assigned = AlreadyAssigned(processing_workers.df_tasks_db)
+    already_assigned = AlreadyAssigned(processing_workers.all_possible_tasks)
     # Prepare Information fo the algorithm - What is the  budget of all the
     # unique tasks that are less urgent than the optional task
-    budget_for_unique_tasks_table = BudgetUnique(already_assigned.config_file)
+    budget_for_unique_tasks_table = BudgetUnique(already_assigned.possible_tasks_table)
     # Processing- the algorithm
 
     assign = Assign(budget_for_unique_tasks_table.config_file, tasks.all_tasks, processing_workers.all_workers,

@@ -1,11 +1,9 @@
 from task import Task
 import math
 from constants import Constants
-import numpy as np
-import pandas as pd
 
 
-def isBlank(cell_value):
+def is_blank(cell_value):
     myString = str(cell_value)
     if myString and myString.strip() and myString != "nan":
         # myString is not None AND myString is not empty or blank
@@ -18,8 +16,7 @@ class GenerateTask:
 
     def __init__(self, tasks_file):
         self.tasks_file = tasks_file
-        self.sort_queue_initial = self.tasks_file.sort_values(by=[Constants.PRIORITY])
-        self.sort_queue = self.sort_queue_initial.reset_index()
+        self.sort_queue = self.tasks_file.sort_values(by=[Constants.PRIORITY]).reset_index()
         self.LEN_ALL_TASKS = self.sort_queue.shape[Constants.FIRST]
         self.ALL_TASKS_RANGE_A = int(math.floor(self.LEN_ALL_TASKS / 3))
         self.ALL_TASKS_RANGE_B = self.ALL_TASKS_RANGE_A * 2
@@ -36,7 +33,7 @@ class GenerateTask:
         assignee = self.sort_queue.loc[row, Constants.ASSIGNEE]
         status = self.sort_queue.loc[row, Constants.STATUS]
         general_location = row
-        if isBlank(assignee):
+        if is_blank(assignee):
             already_assigned = False
         else:
             already_assigned = True
@@ -52,6 +49,8 @@ class GenerateTask:
         return general_index
 
     def run(self):
+
+        # Handling case that there are only 1/2 tasks.
         if self.LEN_ALL_TASKS < 3:
             last_task_group1 = self.set_all_tasks_by_priority(Constants.FIRST, self.ALL_TASKS_RANGE_A,
                                                               Constants.PRIORITY_A, Constants.FIRST,
@@ -63,6 +62,7 @@ class GenerateTask:
 
             return
 
+        # Handling case that there are more than 2 tasks.
         # Set the tasks with priority A
         last_task_group1 = self.set_all_tasks_by_priority(Constants.FIRST, self.ALL_TASKS_RANGE_A, Constants.PRIORITY_A,
                                                           Constants.FIRST, Constants.FIRST_ONE, Constants.PREV_INDEX)
@@ -73,7 +73,7 @@ class GenerateTask:
                                                           Constants.PRIORITY_B, last_task_group1, count,
                                                           Constants.PREV_INDEX)
 
-        # Set the tasks with priority B
+        # Set the tasks with priority C
         count = Constants.FIRST_ONE
         last_task_group3 = self.set_all_tasks_by_priority(self.ALL_TASKS_RANGE_B, self.LEN_ALL_TASKS,
                                                           Constants.PRIORITY_C, last_task_group2, count,

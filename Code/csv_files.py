@@ -27,7 +27,7 @@ def project_io_status(File, db, manager, project, Tasks, Workers, Assigned, ):
         if not is_empty:
             msg = "Note: The project '%s' exists Notice that if you upload files you will overwrite the old files." % project
         else:
-            msg = "Note: The project '%s' is a  new project, Tasks ere not assigned yet" % project
+            msg = "Note: The project '%s' is a  new project, Tasks are not assigned yet" % project
         return msg
 
 
