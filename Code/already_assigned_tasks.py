@@ -23,16 +23,19 @@ class AlreadyAssigned:
                                                                             already_assigned_tasks[
                                                                                 Constants.ALREADY_ASSIGNED], True,
                                                                             False)
+
             initial_assigned = already_assigned_tasks.loc[(already_assigned_tasks[Constants.IS_UNIQUE] == False) &
                                                           (already_assigned_tasks[
                                                                Constants.IS_ASSIGNED_UNIQUE] == True)].index.values
+
             for row in initial_assigned:
                 already_assigned_tasks.at[row, Constants.IS_UNIQUE] = True
                 task_to_be_updated = (already_assigned_tasks.loc[row, Constants.TASK])
                 self.all_tasks_to_be_removed.append(task_to_be_updated)
-
             # Update the col in the possible table
             self.possible_tasks_table.update(already_assigned_tasks)
             # Remove all possible workers that are not already assigned
             for task_to_be_updated in self.all_tasks_to_be_removed:
                 self.remove_already_assigned_tasks_from_possible_worker(task_to_be_updated)
+
+

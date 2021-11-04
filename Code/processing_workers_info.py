@@ -11,7 +11,7 @@ def create_table_possible_tasks():
                        Constants.IDENTIFIER: pd.Series(dtype='int'),
                        Constants.ALLOTTED_TIME: pd.Series(dtype='float'),
                        Constants.IS_UNIQUE: pd.Series(dtype='bool'),
-                       Constants.BUDGET_FOR_UNIQUE_BELLOW: pd.Series(dtype='float'),
+                       Constants.BUDGET_UNIQUE: pd.Series(dtype='float'),
                        Constants.ALREADY_ASSIGNED: pd.Series(dtype='str'),
                        Constants.STATUS: pd.Series(dtype='str'),
                        Constants.IS_ASSIGNED: pd.Series(dtype='bool')})
@@ -50,8 +50,8 @@ class WorkerInfo:
     def set_worker(self, worker_info):
         name = self.config_file.loc[worker_info, Constants.NAME]
         role = self.config_file.loc[worker_info, Constants.ROLE]
-        availability = float(self.config_file.loc[worker_info, Constants.TOTAL])
-        availability_start = float(self.config_file.loc[worker_info, Constants.TOTAL_START])
+        availability = float(self.config_file.loc[worker_info, Constants.TOTAL_HOURS])
+        availability_start = float(self.config_file.loc[worker_info, Constants.TOTAL_HOURS_START])
         expertise = self.config_file.loc[worker_info, Constants.EXPERTISE]
         return Worker(name, None, role, expertise, availability, availability_start, count_current_hours=0,
                       current_tasks=[])
@@ -102,3 +102,4 @@ class WorkerInfo:
                 self.update_initial_impossible_tasks(task.identifier, task.subject, task.description,
                                                      task.allotted_time, j)
                 j += 1
+        #self.all_possible_tasks.to_csv(r"C:\Users\Yael Hadad\Desktop\She codes\project_demo\appendix\Artzy family - appendix\results\pos_tasks.csv", index=False)

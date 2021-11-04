@@ -63,7 +63,7 @@ def main():
     user_and_project_in_assigned = existing_assigned[
         (existing_assigned.Manager == args.manager) & (existing_assigned.Project == args.project)]
 
-    # if yes - drop the old, overwrie
+    # if yes - drop the old, overwrite
     if not user_and_project_in_assigned.empty:
         # update_existing_assigned = existing_assigned.drop(user_and_project_in_assigned.index)
         update_existing_assigned = pd.concat(

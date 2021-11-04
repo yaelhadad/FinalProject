@@ -5,8 +5,6 @@ class Constants:
     NAME = 'Name'
     MANAGER = 'Manager'
     PROJECT = 'Project'
-    TOTAL = 'Total_hours'
-    TOTAL_START = 'Total_hours_at_begin'
     TASK = 'Task'
     IS_UNIQUE = 'Is_the_task_Unique'
     ALLOTTED_TIME = "Allotted_time"
@@ -21,7 +19,6 @@ class Constants:
     PREV = 'Previous'
     CURRENT = 'Current'
     PROGRESSIVE = 'Progressive'
-    REVIEW = 'Review'
     FIRST = 0
     FIRST_ONE = 1
     ID = "ID_Task"
@@ -31,8 +28,6 @@ class Constants:
     PREV_INDEX = 1
     ROLE = "Role"
     EXPERTISE = "Expertise"
-    BUDGET_FOR_UNIQUE_BELLOW = 'Total_time_for_less_important_unique_tasks'
-    SPRINT = "Sprint"
     IDENTIFIER = "ID"
     IS_ASSIGNED = "Is_already_assigned"
     IMPOSSIBLE = "IMPOSSIBLE"
@@ -42,8 +37,6 @@ class Constants:
     NOT_UNIQUE = False
     ALREADY_ASSIGNED = 'Already_assigned_by'
     IS_ASSIGNED_UNIQUE = "Is assigned unique?"
-    UPDATE_UNIQUE = "Should be update as unique?"
-    Removed = "Should be removed?"
     ASSIGNED = 'assigned'
     ONLY_ONE = 1
     ONE_AND_LAST = -1
