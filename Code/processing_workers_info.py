@@ -102,4 +102,3 @@ class WorkerInfo:
                 self.update_initial_impossible_tasks(task.identifier, task.subject, task.description,
                                                      task.allotted_time, j)
                 j += 1
-        #self.all_possible_tasks.to_csv(r"C:\Users\Yael Hadad\Desktop\She codes\project_demo\appendix\Artzy family - appendix\results\pos_tasks.csv", index=False)

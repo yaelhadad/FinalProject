@@ -36,6 +36,7 @@ def csv_upload(Tasks, Workers, user_projects, db, manager, project):
         tasks_csv = request.files['upload_tasks']
         tasks_csv = TextIOWrapper(tasks_csv, encoding='utf-8')
         csv_reader_tasks = csv.reader(tasks_csv, delimiter=',')
+        # When changing existing project, there is need to overwrite the old information
         if db.session.query(Tasks).filter_by(Manager="%s" % manager, Project="%s" % project).count() >= 1:
             db.session.query(Tasks).filter_by(Manager="%s" % manager, Project="%s" % project).delete()
             db.session.commit()
@@ -51,6 +52,7 @@ def csv_upload(Tasks, Workers, user_projects, db, manager, project):
         workers_csv = request.files['upload_workers']
         workers_csv = TextIOWrapper(workers_csv, encoding='utf-8')
         csv_reader_workers = csv.reader(workers_csv, delimiter=',')
+        # When changing existing project, there is need to overwrite the old information
         if db.session.query(Workers).filter_by(Manager="%s" % manager, Project="%s" % project).count() >= 1:
             db.session.query(Workers).filter_by(Manager="%s" % manager, Project="%s" % project).delete()
             db.session.commit()

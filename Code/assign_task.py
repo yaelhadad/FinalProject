@@ -91,6 +91,3 @@ class Assign:
             if not row.loc[Constants.IS_UNIQUE] and task.status not in (Constants.ASSIGNED, Constants.IMPOSSIBLE):
                 self.decide_who_will_assign(self.all_tasks[row.loc[Constants.TASK]])
 
-        # self.config_file.to_csv(
-        #     r"C:\Users\Yael Hadad\Desktop\She codes\project_demo\appendix\Artzy family - appendix\results\assign.csv",
-        #     index=False)

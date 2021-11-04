@@ -49,17 +49,15 @@ def main():
     # unique tasks that are less urgent than the optional task
     budget_for_unique_tasks_table = BudgetUnique(already_assigned.possible_tasks_table)
     # Processing- the algorithm
-
     assign = Assign(budget_for_unique_tasks_table.config_file, tasks.all_tasks, processing_workers.all_workers,
                     processing_workers.all_impossible_tasks)
 
     updated_assigned = update_manager_and_project_assigned_tasks(assign.config_file, args.manager, args.project)
 
     # check if user and project already exists, then overwrite their rows, otherwise, append
-
     existing_assigned = pd.read_sql('assigned', engine)
     update_existing_assigned = existing_assigned
-    # check if exists in the db the project and the manager assign
+    # check if exists in the project and the manager  exists in the db and assigned
     user_and_project_in_assigned = existing_assigned[
         (existing_assigned.Manager == args.manager) & (existing_assigned.Project == args.project)]
 
@@ -70,11 +68,14 @@ def main():
             [existing_assigned, user_and_project_in_assigned, user_and_project_in_assigned]).drop_duplicates(keep=False)
         assigned = update_existing_assigned.to_sql('assigned', engine, if_exists='replace', index=False)
 
-    # if it was exists or not, now this is safe to append
+    # Initial assigned table
     if update_existing_assigned.empty:
         assigned = updated_assigned.to_sql('assigned', engine, if_exists='replace')
+    # If the information was exists - append
     else:
         assigned = updated_assigned.to_sql('assigned', engine, if_exists='append')
+
+    # Handling impossible tasks
     if not assign.all_impossible_tasks.empty:
         impossible = assign.all_impossible_tasks.to_sql('impossible', engine, if_exists='replace', index=False)
     else:
@@ -86,10 +87,8 @@ def main():
         budget_of_all.append(budget)
 
     workers_table["Budget"] = budget_of_all
-    # workers_table.reset_index()
     # Check if the existing workers table in sql is empty, if yes- replace
     existing_workers = pd.read_sql('workers', engine)
-    # update_existing_workers = existing_workers.reset_index()
     update_existing_workers = existing_workers
     # switch all, not check each worker
     user_and_project_in_workers = existing_workers[
@@ -97,11 +96,10 @@ def main():
 
     # if current project appears in sql
     if not user_and_project_in_workers.empty:
-        # update_existing_assigned = existing_assigned.drop(user_and_project_in_assigned.index)
         update_existing_workers = pd.concat(
             [existing_workers, user_and_project_in_workers, user_and_project_in_workers]).drop_duplicates(keep=False)
 
-        # inital table
+        # initial table
         if update_existing_workers.empty:
             workers = workers_table.to_sql('workers', engine, if_exists='replace', index=False)
         # not initial table
